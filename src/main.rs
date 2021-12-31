@@ -1,37 +1,44 @@
 use tokio::net::UnixDatagram;
-use serde::{Serialize, Deserialize};
-use std::{io, str};
+use std::{fs, io, str};
+use record::Record;
 
+mod record;
 
-#[derive(Serialize, Deserialize, Debug)]
-struct Record {
-    x: i32,
-}
-
-async fn handle(message: [u8; 1024]) -> io::Result<()>{
-    let s = match str::from_utf8(&message) {
-        Ok(v) => v,
+async fn handle(message: [u8; 1024], message_size: usize) -> io::Result<()>{
+    let s: Record = match str::from_utf8(&message[..message_size]) {
+        Ok(v) => {
+            match serde_json::from_str(v) {
+                Ok(v) => v,
+                Err(e) => panic!("String is not valid JSON: {}", e),
+            }
+        },
         Err(e) => panic!("Invalid UTF-8 sequence: {}", e),
     };
 
-    println!("result: {}", s);
+    println!("result: {:?}", s);
 
     Ok(())
 }
 
 #[tokio::main]
 async fn main() -> io::Result<()> {
-    let client_path = "/var/run/snoopy.sock";
-    let socket = UnixDatagram::bind(&client_path)?;
+    let sock_path = "/var/run/snoopy.sock";
+
+    match fs::remove_file(sock_path) {
+        Ok(_) => {println!("Socket recreated")}
+        Err(e) => { println!("Error: {:?}", e)}
+    }
+
+    let socket = UnixDatagram::bind(&sock_path)?;
     
-    println!("Listening started\n");
+    println!("Listening started");
 
     loop {
         socket.readable().await?;
         let mut message: [u8; 1024] = [0; 1024];
         match socket.try_recv_from(&mut message) {
-            Ok((n, _addr)) => {
-                handle(message).await?;
+            Ok((message_size, _)) => {
+                handle(message, message_size).await?;
             }
             Err(ref e) if e.kind() == io::ErrorKind::WouldBlock => {
                 continue;

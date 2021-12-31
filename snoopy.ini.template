@@ -2,10 +2,7 @@
 ;output = file:/var/log/snoopy.log
 output = socket:/var/run/snoopy.sock
 
-
-; Default value:
-;   "[login:%{login} ssh:(%{env:SSH_CONNECTION}) sid:%{sid} tty:%{tty} (%{tty_uid}/%{tty_username}) uid:%{username}(%{uid})/%{eusername}(%{euid}) cwd:%{cwd}]: %{cmdline}"
-; List of available data sources:
+message_format = "{"cmdline": "%{cmdline}", "cwd": "%{cwd}", "datetime": "%{datetime}", "domain": "%{domain}", "hostname": "%{hostname}", "egid": "%{egid}", "euid": "%{euid}", "egroup": "%{egroup}", "login": "%{login}", "pid": "%{pid}", "ppid": "%{ppid}", "tty": "%{tty}", "tty_uid": "%{tty_uid}", "tty_username": "%{tty_username}", "username": "%{username}", "eusername": "%{eusername}", "uid": "%{uid}", "ssh": "%{env:SSH_CONNECTION}", "filename": "%{filename}", "gid": "%{gid}", "group": "%{group}", "rpname": "%{rpname}", "sid": "%{sid}", "tid": "%{tid}", "tid_kernel": "%{tid_kernel}"}"
 ; - %{cmdline}        ; (available=yes) Full command line, with arguments
 ; - %{cwd}            ; (available=yes) Current working directory
 ; - %{datetime}       ; (available=yes) Date and time in ISO 8601 format
@@ -39,32 +36,3 @@ output = socket:/var/run/snoopy.sock
 ; - %{tty_username}   ; (available=yes) TTY username
 ; - %{uid}            ; (available=yes) User id that executed the command
 ; - %{username}       ; (available=yes) Username that executed the command
-
-message_format = ""
-{
-	"cmdline": "%{cmdline}",
-	"cwd": "%{cwd}",
-	"datetime": "%{datetime}",
-	"domain": "%{domain}",
-	"hostname": "%{hostname}",
-	"egid": "%{egid}",
-	"euid": "%{euid}",
-	"egroup": "%{egroup}",
-	"login": "%{login}",
-	"pid": "%{pid}",
-	"ppid": "%{ppid}",
-	"tty": "%{tty}",
-	"tty_uid": "%{tty_uid}",
-	"tty_username": "%{tty_username}",
-	"username": "%{username}",
-	"eusername": "%{eusername}",
-	"uid": "%{uid}",
-	"ssh": "%{env:SSH_CONNECTION}",
-	"filename": "%{filename}",
-	"gid": "%{gid}",
-	"group": "%{group}",
-	"rpname": "%{rpname}",
-	"sid": "%{sid}",
-	"tid": "%{tid}",
-	"tid_kernel": "%{tid_kernel}"
-}
