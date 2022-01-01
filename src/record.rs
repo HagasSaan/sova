@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use std::str;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Record {
@@ -27,4 +28,18 @@ pub struct Record {
     sid: String,
     tid: String,
     tid_kernel: String,
+}
+
+impl Record {
+    pub fn from_bytes(message: &[u8; 1024], message_size: usize) -> Result<Record, String> {
+        match str::from_utf8(&message[..message_size]) {
+            Ok(v) => {
+                match serde_json::from_str(v) {
+                    Ok(v) => Ok(v),
+                    Err(e) => Err(e.to_string()),
+                }
+            },
+            Err(e) => Err(e.to_string()),
+        }
+    }
 }

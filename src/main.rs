@@ -1,51 +1,24 @@
-use tokio::net::UnixDatagram;
-use std::{fs, io, str};
-use record::Record;
-
 mod record;
+mod configuration;
+mod analyzer;
+mod sova;
 
-async fn handle(message: [u8; 1024], message_size: usize) -> io::Result<()>{
-    let s: Record = match str::from_utf8(&message[..message_size]) {
-        Ok(v) => {
-            match serde_json::from_str(v) {
-                Ok(v) => v,
-                Err(e) => panic!("String is not valid JSON: {}", e),
-            }
-        },
-        Err(e) => panic!("Invalid UTF-8 sequence: {}", e),
-    };
-
-    println!("result: {:?}", s);
-
-    Ok(())
-}
+use std::io;
+use record::Record;
+use sova::Sova;
+use crate::analyzer::Analyzer;
+use crate::configuration::{BehaviourOnIncidents, Configuration};
 
 #[tokio::main]
 async fn main() -> io::Result<()> {
-    let sock_path = "/var/run/snoopy.sock";
+    let sock_path = "/var/run/snoopy.sock".to_string();
 
-    match fs::remove_file(sock_path) {
-        Ok(_) => {println!("Socket recreated")}
-        Err(e) => { println!("Error: {:?}", e)}
-    }
+    let configuration = Configuration::new(
+        sock_path,
+        BehaviourOnIncidents::LogOnly,
+    );
 
-    let socket = UnixDatagram::bind(&sock_path)?;
-    
-    println!("Listening started");
+    let sova: Sova = Sova::new(configuration);
 
-    loop {
-        socket.readable().await?;
-        let mut message: [u8; 1024] = [0; 1024];
-        match socket.try_recv_from(&mut message) {
-            Ok((message_size, _)) => {
-                handle(message, message_size).await?;
-            }
-            Err(ref e) if e.kind() == io::ErrorKind::WouldBlock => {
-                continue;
-            }
-            Err(e) => {
-                println!("Error: {:?}", e);
-            }
-        }
-    }
+    sova.start().await
 }
