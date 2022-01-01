@@ -2,6 +2,7 @@ use tokio::net::UnixDatagram;
 use std::{fs, io};
 
 use crate::{Analyzer, Configuration, Record};
+use crate::analyzer::AnalyzerResult;
 
 pub struct Sova {
     configuration: Configuration,
@@ -57,6 +58,18 @@ impl Sova {
         let analysis_result = self.analyzer.analyze(&record);
         println!("result: {:?}", record);
         println!("analysis result: {:?}", analysis_result);
+        // TODO: realize actions
+        match analysis_result {
+            AnalyzerResult::LogOnly => {
+                println!("Logging...");
+            }
+            AnalyzerResult::KillProcess => {
+                println!("Killing process...");
+            }
+            AnalyzerResult::KillSystem => {
+                println!("Death requested");
+            }
+        }
 
         Ok(())
     }

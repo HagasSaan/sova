@@ -13,19 +13,13 @@ pub struct Analyzer {
 }
 
 impl Analyzer {
-    pub fn new(configuration: Configuration) -> Analyzer {
-        Analyzer {
-            configuration
-        }
-    }
+    pub fn new(configuration: Configuration) -> Analyzer { Analyzer { configuration } }
 
     pub fn analyze(&self, record: &Record) -> AnalyzerResult {
         match self.configuration.behaviour_on_incidents {
             BehaviourOnIncidents::LogOnly => AnalyzerResult::LogOnly,
-            BehaviourOnIncidents::KillProcess => AnalyzerResult::KillProcess,
-            BehaviourOnIncidents::KillSystem => AnalyzerResult::KillSystem,
-            BehaviourOnIncidents::BasedOnAnalysisResult => {
-                // TODO: make analysis
+            _ => {
+                // TODO: if process not in whitelist or something like that
                 AnalyzerResult::LogOnly
             }
         }

@@ -2,6 +2,8 @@ mod record;
 mod configuration;
 mod analyzer;
 mod sova;
+mod analyzer_tests;
+mod record_tests;
 
 use std::io;
 use record::Record;

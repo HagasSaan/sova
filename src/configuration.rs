@@ -1,9 +1,7 @@
 #[derive(Clone)]
 pub enum BehaviourOnIncidents {
     LogOnly,
-    BasedOnAnalysisResult,
     KillProcess,
-    KillSystem,
 }
 
 #[derive(Clone)]
