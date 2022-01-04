@@ -4,6 +4,7 @@ mod analyzer;
 mod sova;
 mod analyzer_tests;
 mod record_tests;
+mod rule;
 
 use std::io;
 use record::Record;
@@ -18,6 +19,7 @@ async fn main() -> io::Result<()> {
     let configuration = Configuration::new(
         sock_path,
         BehaviourOnIncidents::LogOnly,
+        None
     );
 
     let sova: Sova = Sova::new(configuration);
