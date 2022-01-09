@@ -10,6 +10,10 @@ RUN mkdir /sova
 WORKDIR /sova
 COPY ./src /sova/src
 COPY ./Cargo.toml /sova/Cargo.toml
-RUN cargo build
+RUN cargo build --release
 
-CMD cargo run
+RUN echo 'sleep infinity' >> /bootstrap.sh
+RUN chmod +x /bootstrap.sh
+CMD /bootstrap.sh
+
+#CMD cargo run

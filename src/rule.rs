@@ -3,18 +3,21 @@ use serde::{Deserialize, Serialize};
 use std::io;
 use crate::Record;
 
+#[derive(Clone, Deserialize, Serialize, Hash, Eq, PartialEq)]
 enum Subject {
     Process,
     UserID,
     Filename,
-    // NOTE: subjects of record
+    // NOTE: subjects of record // TODO: move to documentation
 }
 
+#[derive(Clone, Deserialize, Serialize, Hash, Eq, PartialEq)]
 enum ConditionType {
     In,
     NotIn,
 }
 
+#[derive(Clone, Deserialize, Serialize, Hash, Eq, PartialEq)]
 enum RuleResult {
     Pass,
     Fail,
@@ -29,7 +32,7 @@ pub struct Rule {
 
 impl Rule {
     pub fn check(&self, record: Record) -> io::Result<RuleResult> {
-        match condition {
+        match self.condition {
             ConditionType::In => {
                 // get record subject
                 // if subject in objects return Ok(RuleResult::Pass)
