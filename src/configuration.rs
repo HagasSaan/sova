@@ -4,14 +4,14 @@ use serde::{Deserialize, Serialize};
 
 use crate::rule::Rule;
 
-#[derive(Clone, Deserialize, Serialize)]
+#[derive(Clone, Deserialize, Serialize, PartialEq)]
 pub enum BehaviourOnIncidents {
     LogOnly,
     KillProcess,
     KillSystem,
 }
 
-#[derive(Clone, Deserialize, Serialize)]
+#[derive(Clone, Deserialize, Serialize, PartialEq)]
 pub struct Configuration {
     pub unix_socket_path: String,
     pub behaviour_on_incidents: BehaviourOnIncidents,

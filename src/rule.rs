@@ -27,7 +27,7 @@ enum RuleResult {
 pub struct Rule {
     subject: Subject,
     condition: ConditionType,
-    objects: HashSet<String>,
+    objects: Vec<String>,
 }
 
 impl Rule {
