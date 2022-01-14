@@ -6,7 +6,7 @@ mod analyzer_tests {
         let configuration: Configuration = Configuration::new(
             "/tmp/test.sock".to_string(),
             BehaviourOnIncidents::LogOnly,
-            None
+            vec![],
         );
         Analyzer::new(configuration)
     }

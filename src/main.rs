@@ -10,16 +10,25 @@ use std::io;
 use record::Record;
 use sova::Sova;
 use crate::analyzer::Analyzer;
-use crate::configuration::{BehaviourOnIncidents, Configuration};
+use crate::configuration::{Behaviour, Configuration};
+use crate::rule::{ConditionType, Rule, Subject};
 
 #[tokio::main]
 async fn main() -> io::Result<()> {
     let sock_path = "/var/run/snoopy.sock".to_string();
+    let rules = vec![
+        Rule {
+            subject: Subject::CommandLine,
+            condition: ConditionType::NotIn,
+            objects: vec![],
+            behaviour_on_violation: Behaviour::LogOnly
+        }
+    ];
 
     let configuration = Configuration::new(
         sock_path,
-        BehaviourOnIncidents::LogOnly,
-        None
+        Behaviour::LogOnly,
+        rules,
     );
 
     let sova: Sova = Sova::new(configuration);

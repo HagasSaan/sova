@@ -1,12 +1,6 @@
-use crate::configuration::Configuration;
-use crate::{BehaviourOnIncidents, Record};
-
-#[derive(Debug)]
-pub enum AnalyzerResult {
-    LogOnly,
-    KillProcess,
-    KillSystem,
-}
+use crate::configuration::{Behaviour, Configuration};
+use crate::Record;
+use crate::rule::RuleResult;
 
 pub struct Analyzer {
     configuration: Configuration,
@@ -15,12 +9,25 @@ pub struct Analyzer {
 impl Analyzer {
     pub fn new(configuration: Configuration) -> Analyzer { Analyzer { configuration } }
 
-    pub fn analyze(&self, record: &Record) -> AnalyzerResult {
+    pub fn analyze(&self, record: &Record) -> Behaviour {
         match self.configuration.behaviour_on_incidents {
-            BehaviourOnIncidents::LogOnly => AnalyzerResult::LogOnly,
+            Behaviour::LogOnly => Behaviour::LogOnly,
             _ => {
-                // TODO: if process not in whitelist or something like that
-                AnalyzerResult::LogOnly
+                for rule in &self.configuration.rules {
+                    match rule.check(&record) {
+                        Ok(result) => {
+                            match result {
+                                RuleResult::Pass => {continue;},
+                                RuleResult::Fail => {return rule.behaviour_on_violation.clone();},
+                            }
+                        }
+                        Err(e) => {
+                            println!("Unexpected error on rule checking analyzing: {:?}", e);
+                            return self.configuration.behaviour_on_incidents.clone();
+                        }
+                    }
+                }
+                Behaviour::LogOnly
             }
         }
     }

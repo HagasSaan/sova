@@ -1,4 +1,4 @@
-FROM rust:1.57.0-bullseye
+FROM rust:1.58.0-bullseye
 
 RUN apt update && apt install -y gcc gzip make procps socat tar wget curl supervisor
 RUN wget -O install-snoopy.sh https://github.com/a2o/snoopy/raw/install/install/install-snoopy.sh && \

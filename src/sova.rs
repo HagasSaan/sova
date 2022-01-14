@@ -1,8 +1,7 @@
 use tokio::net::UnixDatagram;
 use std::{fs, io};
 
-use crate::{Analyzer, Configuration, Record};
-use crate::analyzer::AnalyzerResult;
+use crate::{Analyzer, Behaviour, Configuration, Record};
 
 pub struct Sova {
     configuration: Configuration,
@@ -60,13 +59,13 @@ impl Sova {
         println!("analysis result: {:?}", analysis_result);
         // TODO: realize actions
         match analysis_result {
-            AnalyzerResult::LogOnly => {
+            Behaviour::LogOnly => {
                 println!("Logging...");
             }
-            AnalyzerResult::KillProcess => {
+            Behaviour::KillProcess => {
                 println!("Killing process...");
             }
-            AnalyzerResult::KillSystem => {
+            Behaviour::KillSystem => {
                 println!("Death requested");
             }
         }
