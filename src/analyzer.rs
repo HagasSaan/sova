@@ -14,7 +14,10 @@ impl Analyzer {
             Behaviour::LogOnly => Behaviour::LogOnly,
             _ => {
                 for rule in &self.configuration.rules {
-                    match rule.check(&record) {
+                    println!("Checking rule: {:?}", rule);
+                    let rule_result = rule.check(&record);
+                    println!("Rule result: {:?}", rule_result);
+                    match rule_result {
                         Ok(result) => {
                             match result {
                                 RuleResult::Pass => {continue;},

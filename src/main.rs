@@ -19,15 +19,15 @@ async fn main() -> io::Result<()> {
     let rules = vec![
         Rule {
             subject: Subject::CommandLine,
-            condition: ConditionType::NotIn,
-            objects: vec![],
-            behaviour_on_violation: Behaviour::LogOnly
+            condition: ConditionType::MustBeIn,
+            objects: vec![String::from("telegram-desktop")],
+            behaviour_on_violation: Behaviour::KillProcess
         }
     ];
 
     let configuration = Configuration::new(
         sock_path,
-        Behaviour::LogOnly,
+        Behaviour::KillProcess,
         rules,
     );
 
