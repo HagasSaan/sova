@@ -1,5 +1,6 @@
 use serde::{Deserialize, Serialize};
 use std::str;
+use crate::sova::SNOOPY_LOG_MESSAGE_MAX_SIZE;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Record {
@@ -31,7 +32,7 @@ pub struct Record {
 }
 
 impl Record {
-    pub fn from_bytes(message: &[u8; 1024], message_size: usize) -> Result<Record, String> {
+    pub fn from_bytes(message: &[u8; SNOOPY_LOG_MESSAGE_MAX_SIZE], message_size: usize) -> Result<Record, String> {
         match str::from_utf8(&message[..message_size]) {
             Ok(v) => {
                 match serde_json::from_str(v) {

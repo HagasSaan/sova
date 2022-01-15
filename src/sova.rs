@@ -3,6 +3,9 @@ use std::{fs, io, process};
 
 use crate::{Analyzer, Behaviour, Configuration, Record};
 
+// https://github.com/a2o/snoopy/blob/master/src/snoopy.h#L115
+pub const SNOOPY_LOG_MESSAGE_MAX_SIZE: usize = 16383;
+
 pub struct Sova {
     configuration: Configuration,
     analyzer: Analyzer,
@@ -34,7 +37,7 @@ impl Sova {
 
         loop {
             socket.readable().await?;
-            let mut message: [u8; 1024] = [0; 1024];
+            let mut message: [u8; SNOOPY_LOG_MESSAGE_MAX_SIZE] = [0; SNOOPY_LOG_MESSAGE_MAX_SIZE];
             match socket.try_recv_from(&mut message) {
                 Ok((message_size, _)) => {
                     match self.handle(message, message_size).await {
@@ -52,7 +55,7 @@ impl Sova {
         }
     }
 
-    async fn handle(&self, message: [u8; 1024], message_size: usize) -> Result<(), String> {
+    async fn handle(&self, message: [u8; SNOOPY_LOG_MESSAGE_MAX_SIZE], message_size: usize) -> Result<(), String> {
         let record = Record::from_bytes(&message, message_size)?;
         println!("record: {:?}", record);
 
@@ -84,7 +87,16 @@ impl Sova {
                 }
             }
             Behaviour::KillSystem => {
-                println!("Death requested");
+                println!("Killing system due rule violation");
+                let mut process = process::Command::new("pkill");
+                process.arg("-f").arg("/usr/bin/supervisor");
+                match process.status() {
+                    Ok(_) => { println!("System killed"); }
+                    Err(_) => {
+                        // TODO: ALARM!!!
+                        println!("System not killed");
+                    }
+                }
             }
         }
 

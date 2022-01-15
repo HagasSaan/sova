@@ -20,8 +20,10 @@ async fn main() -> io::Result<()> {
         Rule {
             subject: Subject::CommandLine,
             condition: ConditionType::MustBeIn,
-            objects: vec![String::from("telegram-desktop")],
-            behaviour_on_violation: Behaviour::KillProcess
+            objects: vec![
+                String::from("supervisorctl")
+            ],
+            behaviour_on_violation: Behaviour::KillSystem
         }
     ];
 

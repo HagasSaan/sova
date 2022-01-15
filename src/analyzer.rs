@@ -16,9 +16,9 @@ impl Analyzer {
                 for rule in &self.configuration.rules {
                     println!("Checking rule: {:?}", rule);
                     let rule_result = rule.check(&record);
-                    println!("Rule result: {:?}", rule_result);
                     match rule_result {
                         Ok(result) => {
+                            println!("Rule result: {:?}", result);
                             match result {
                                 RuleResult::Pass => {continue;},
                                 RuleResult::Fail => {return rule.behaviour_on_violation.clone();},
