@@ -1,0 +1,9 @@
+---
+unix_socket_path: /var/run/snoopy.sock
+behaviour_on_incidents: KillProcess
+rules:
+  - subject: CommandLine
+    condition: MustBeIn
+    objects:
+      - supervisorctl
+    behaviour_on_violation: KillSystem
