@@ -16,26 +16,6 @@ use crate::rule::{ConditionType, Rule, Subject};
 
 #[tokio::main]
 async fn main() -> io::Result<()> {
-    // let sock_path = "/var/run/snoopy.sock".to_string();
-    // let rules = vec![
-    //     Rule {
-    //         subject: Subject::CommandLine,
-    //         condition: ConditionType::MustBeIn,
-    //         objects: vec![
-    //             String::from("supervisorctl")
-    //         ],
-    //         behaviour_on_violation: Behaviour::KillSystem
-    //     }
-    // ];
-
-    // let configuration = Configuration::new(
-    //     sock_path,
-    //     Behaviour::KillProcess,
-    //     rules,
-    // );
-
-    // configuration.dump_into_yaml_file(String::from("/tmp/sova.yaml"));
-
     const DEFAULT_PATH: &str = "/tmp/sova.yaml";
 
     let path = match env::var("SOVA_CONFIG") {
@@ -49,7 +29,7 @@ async fn main() -> io::Result<()> {
         },
     };
 
-    let configuration = Configuration::load_from_yaml_file(path);
+    let configuration = Configuration::load(path);
 
     println!("Configuration loaded");
 

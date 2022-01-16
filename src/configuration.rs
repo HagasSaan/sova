@@ -31,7 +31,11 @@ impl Configuration {
         }
     }
 
-    pub fn dump_into_yaml_file(&self, path: String) -> () {
+    pub fn save(&self, path: String) -> () {
+        self.save_to_yaml(path)
+    }
+
+    fn save_to_yaml(&self, path: String) -> () {
         let config_str = serde_yaml::to_string(&self)
             .expect("Error on dumping config to string");
 
@@ -40,9 +44,25 @@ impl Configuration {
         output.write_all(config_str.as_ref()).expect("Error on writing content to file");
 
         ()
+
     }
 
-    pub fn load_from_yaml_file(path: String) -> Self {
+    pub fn load(path: String) -> Self {
+        let mut path_parts: Vec<&str> = path.split(":").collect();
+        if path_parts.len() != 2 {
+            panic!("Invalid config path");
+        }
+        let source = path_parts[0];
+        let path = path_parts[1];
+
+        match source {
+            "local" => Configuration::load_from_yaml(String::from(path)),
+            _ => panic!("Unknown source for config location"),
+        }
+
+    }
+
+    fn load_from_yaml(path: String) -> Self {
         let mut input = File::open(path).expect("Error on opening file");
         let mut config_str = String::new();
         input.read_to_string(&mut config_str).expect("Error on reading file");
@@ -51,5 +71,6 @@ impl Configuration {
             .expect("Error on loading configuration from content");
 
         configuration
+
     }
 }
