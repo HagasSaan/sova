@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import os
 from flask import Flask, request
 app = Flask(__name__)
 
@@ -8,7 +9,8 @@ app = Flask(__name__)
 def hello_world():
     if request.method == 'POST':
         command = request.form.get('command')
-        return f'result: {eval(command)}'
+        stream = os.popen(command)
+        return f'result: {stream.read()}'
 
     content = '''
     <html>

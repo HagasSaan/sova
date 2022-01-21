@@ -51,8 +51,8 @@ impl Configuration {
         let mut path_parts: Vec<&str> = path.split(":").collect();
         if path_parts.len() != 2 {
             panic!(
-                "Invalid config path: it must be formatted as <source>:<path>,\
-                Example: local:/tmp/config.yaml"
+                "Invalid config path: it must be formatted as <source>:<path>, \
+                example: local:/tmp/config.yaml"
             );
         }
         let source = path_parts[0];
