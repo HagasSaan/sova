@@ -50,7 +50,10 @@ impl Configuration {
     pub fn load(path: String) -> Self {
         let mut path_parts: Vec<&str> = path.split(":").collect();
         if path_parts.len() != 2 {
-            panic!("Invalid config path");
+            panic!(
+                "Invalid config path: it must be formatted as <source>:<path>,\
+                Example: local:/tmp/config.yaml"
+            );
         }
         let source = path_parts[0];
         let path = path_parts[1];

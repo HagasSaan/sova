@@ -4,3 +4,7 @@ services:
     build: .
     ports:
       - "5000:5000"
+    environment:
+      - SOVA_CONFIG=local:/etc/sova/sova.yaml
+    volumes:
+      - ./sova.yaml:/etc/sova/sova.yaml
