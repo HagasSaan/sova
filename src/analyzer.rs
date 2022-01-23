@@ -2,7 +2,6 @@ use Record;
 use rule::RuleResult;
 use crate::behaviour::Behaviour;
 use crate::configuration::Configuration;
-use crate::rule::Rule;
 
 pub struct Analyzer {
     configuration: Configuration,

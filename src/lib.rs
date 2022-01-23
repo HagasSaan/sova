@@ -2,10 +2,9 @@
 extern crate lazy_static;
 extern crate libc;
 
-use std::{mem, slice};
-use std::ffi::{CStr, CString};
+use std::mem;
+use std::ffi::CStr;
 
-use libc::c_char;
 use analyzer::Analyzer;
 use behaviour::Behaviour;
 use configuration::Configuration;
@@ -44,6 +43,26 @@ pub unsafe extern fn execv(path: *const libc::c_char, argv: *const *const libc::
         envp: None
     };
 
+    let analyzer = get_analyzer();
+
+    let behaviour = analyzer.analyze(record);
+
+    match behaviour {
+        Behaviour::KillSystem => {
+            println!("Killing system");
+            // TODO: kill system, really
+        },
+        Behaviour::KillProcess => {
+            println!("Killing process");
+            return;
+        },
+        Behaviour::LogOnly => {},
+    };
+
+    ORIGINAL_EXECV(path, argv)
+}
+
+fn get_analyzer() -> Analyzer {
     let rules = vec![
         Rule {
             subject: String::from("path"),
@@ -60,21 +79,7 @@ pub unsafe extern fn execv(path: *const libc::c_char, argv: *const *const libc::
         rules,
     };
 
-    let analyzer = Analyzer::new(configuration);
-
-    let behaviour = analyzer.analyze(record);
-
-    match behaviour {
-        Behaviour::KillSystem => {
-            println!("Killing system");
-        },
-        Behaviour::KillProcess => {
-            println!("Killing process");
-        },
-        Behaviour::LogOnly => {},
-    };
-
-    ORIGINAL_EXECV(path, argv)
+    Analyzer::new(configuration)
 }
 
 
