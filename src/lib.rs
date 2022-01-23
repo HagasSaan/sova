@@ -2,11 +2,23 @@
 extern crate lazy_static;
 extern crate libc;
 
-use std::ffi::{CStr, CString};
 use std::{mem, slice};
+use std::ffi::{CStr, CString};
+
 use libc::c_char;
+use analyzer::Analyzer;
+use behaviour::Behaviour;
+use configuration::Configuration;
+
+use record::Record;
+use rule::{ConditionType, Rule};
 
 mod utils;
+mod analyzer;
+mod behaviour;
+mod rule;
+mod record;
+mod configuration;
 
 lazy_static! {
     static ref ORIGINAL_EXECV: extern fn(
@@ -23,57 +35,80 @@ lazy_static! {
 #[no_mangle]
 pub unsafe extern fn execv(path: *const libc::c_char, argv: *const *const libc::c_char) {
     println!("execv runned");
-    let path_clone = path.clone();
-    let path_str = CStr::from_ptr(path_clone).to_str();
-    println!("{:?}", path_str.expect("not correct utf8"));
+    let path_str = utils::from_pointer_to_string(path.clone());
+    let argv_vec_str = utils::from_arr_ptr_to_vec(argv.clone());
 
-    let argv_clone = argv.clone();
+    let record: Record = Record {
+        path: path_str,
+        argv: argv_vec_str,
+        envp: None
+    };
 
-    let argv_vec_str = utils::from_c_array_pointer_to_rust_vec(argv_clone);
+    let rules = vec![
+        Rule {
+            subject: String::from("path"),
+            condition: ConditionType::MustBeIn,
+            objects: vec![
+                // String::from("")
+            ],
+            behaviour_on_violation: Behaviour::KillProcess,
+        }
+    ];
 
-    let argv_vec_str = argv_vec_str
-        .into_iter()
-        .map(
-            |el| {
-                CStr::from_ptr(el)
-                    .to_str()
-                    .expect("not correct utf8")
-            }
-        );
+    let configuration = Configuration {
+        behaviour_on_incidents: Behaviour::KillSystem,
+        rules,
+    };
 
-    for argv_arg in argv_vec_str {
-        println!("{:?}", argv_arg);
-    }
+    let analyzer = Analyzer::new(configuration);
+
+    let behaviour = analyzer.analyze(record);
+
+    match behaviour {
+        Behaviour::KillSystem => {
+            println!("Killing system");
+        },
+        Behaviour::KillProcess => {
+            println!("Killing process");
+        },
+        Behaviour::LogOnly => {},
+    };
 
     ORIGINAL_EXECV(path, argv)
 }
 
 
-// lazy_static! {
-//     static ref ORIGINAL_EXECVE: extern fn(
-//         *const libc::c_char,
-//         *const *const libc::c_char,
-//         *const *const libc::c_char,
-//     ) = unsafe {
-//         let fn_name = CStr::from_bytes_with_nul(b"execve\0").unwrap();
-//         let fn_ptr = libc::dlsym(libc::RTLD_NEXT, fn_name.as_ptr());
+lazy_static! {
+    static ref ORIGINAL_EXECVE: extern fn(
+        *const libc::c_char,
+        *const *const libc::c_char,
+        *const *const libc::c_char,
+    ) = unsafe {
+        let fn_name = CStr::from_bytes_with_nul(b"execve\0").unwrap();
+        let fn_ptr = libc::dlsym(libc::RTLD_NEXT, fn_name.as_ptr());
 
-//         mem::transmute(fn_ptr)
-//     };
-// }
+        mem::transmute(fn_ptr)
+    };
+}
 
-// #[no_mangle]
-// pub unsafe extern fn execve(
-//     path: *const libc::c_char,
-//     argv: *const *const libc::c_char,
-//     envp: *const *const libc::c_char,
-// ) {
-//     println!("execve runned");
+#[no_mangle]
+pub unsafe extern fn execve(
+    path: *const libc::c_char,
+    argv: *const *const libc::c_char,
+    envp: *const *const libc::c_char,
+) {
+    println!("execve runned");
+    let path_str = utils::from_pointer_to_string(path.clone());
+    let argv_vec_str = utils::from_arr_ptr_to_vec(argv.clone());
+    let envp_vec_str = utils::from_arr_ptr_to_vec(envp.clone());
+
+    let record: Record = Record {
+        path: path_str,
+        argv: argv_vec_str,
+        envp: envp_vec_str,
+    };
+
+    println!("record: {:?}", record);
     
-//     let path_clone = path.clone();
-//     let rust_string = CStr::from_ptr(path_clone).to_str();
-//     println!("{:?}", rust_string);
-//     // let c_string = CString::new(rust_string).unwrap();
-    
-//     ORIGINAL_EXECVE(path, argv, envp)
-// }
+    ORIGINAL_EXECVE(path, argv, envp)
+}
