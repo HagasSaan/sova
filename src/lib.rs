@@ -1,16 +1,18 @@
 #[macro_use]
 extern crate lazy_static;
 extern crate libc;
+extern crate log;
 
-use std::mem;
 use std::ffi::CStr;
+use std::mem;
 
 use analyzer::Analyzer;
 use behaviour::Behaviour;
 use configuration::Configuration;
-
+use logger::setup_logger;
 use record::Record;
 use rule::{ConditionType, Rule};
+use log::{debug, error, info, trace, warn};
 
 mod utils;
 mod analyzer;
@@ -18,6 +20,7 @@ mod behaviour;
 mod rule;
 mod record;
 mod configuration;
+mod logger;
 
 lazy_static! {
     static ref ORIGINAL_EXECV: extern fn(
@@ -33,7 +36,8 @@ lazy_static! {
 
 #[no_mangle]
 pub unsafe extern fn execv(path: *const libc::c_char, argv: *const *const libc::c_char) {
-    println!("execv runned");
+    setup_logger("/tmp/sova.log").unwrap();
+    info!("execv runned");
     let path_str = utils::from_pointer_to_string(path.clone());
     let argv_vec_str = utils::from_arr_ptr_to_vec(argv.clone());
 
@@ -43,26 +47,30 @@ pub unsafe extern fn execv(path: *const libc::c_char, argv: *const *const libc::
         envp: None
     };
 
-    let analyzer = get_analyzer();
+    let configuration = get_configuration();
+
+    let analyzer = Analyzer::new(configuration);
 
     let behaviour = analyzer.analyze(record);
 
     match behaviour {
         Behaviour::KillSystem => {
-            println!("Killing system");
+            warn!("Killing system");
             // TODO: kill system, really
         },
         Behaviour::KillProcess => {
-            println!("Killing process");
+            warn!("Killing process");
             return;
         },
-        Behaviour::LogOnly => {},
+        Behaviour::LogOnly => {
+            info!("Logging only");
+        },
     };
 
     ORIGINAL_EXECV(path, argv)
 }
 
-fn get_analyzer() -> Analyzer {
+fn get_configuration() -> Configuration {
     let rules = vec![
         Rule {
             subject: String::from("path"),
@@ -79,7 +87,7 @@ fn get_analyzer() -> Analyzer {
         rules,
     };
 
-    Analyzer::new(configuration)
+    configuration
 }
 
 
@@ -102,7 +110,8 @@ pub unsafe extern fn execve(
     argv: *const *const libc::c_char,
     envp: *const *const libc::c_char,
 ) {
-    println!("execve runned");
+    setup_logger("/tmp/sova.log").unwrap();
+    info!("execve runned");
     let path_str = utils::from_pointer_to_string(path.clone());
     let argv_vec_str = utils::from_arr_ptr_to_vec(argv.clone());
     let envp_vec_str = utils::from_arr_ptr_to_vec(envp.clone());
@@ -113,7 +122,25 @@ pub unsafe extern fn execve(
         envp: envp_vec_str,
     };
 
-    println!("record: {:?}", record);
-    
+    let configuration = get_configuration();
+
+    let analyzer = Analyzer::new(configuration);
+
+    let behaviour = analyzer.analyze(record);
+
+    match behaviour {
+        Behaviour::KillSystem => {
+            warn!("Killing system");
+            // TODO: kill system, really
+        },
+        Behaviour::KillProcess => {
+            warn!("Killing process");
+            return;
+        },
+        Behaviour::LogOnly => {
+            info!("Logging only");
+        },
+    };
+
     ORIGINAL_EXECVE(path, argv, envp)
 }
