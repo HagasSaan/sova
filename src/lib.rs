@@ -36,6 +36,8 @@ lazy_static! {
 
 #[no_mangle]
 pub unsafe extern fn execv(path: *const libc::c_char, argv: *const *const libc::c_char) {
+    let configuration = get_configuration();
+
     setup_logger("/tmp/sova.log").unwrap();
     info!("execv runned");
     let path_str = utils::from_pointer_to_string(path.clone());
@@ -46,8 +48,6 @@ pub unsafe extern fn execv(path: *const libc::c_char, argv: *const *const libc::
         argv: argv_vec_str,
         envp: None
     };
-
-    let configuration = get_configuration();
 
     let analyzer = Analyzer::new(configuration);
 
@@ -76,7 +76,9 @@ fn get_configuration() -> Configuration {
             subject: String::from("path"),
             condition: ConditionType::MustBeIn,
             objects: vec![
-                // String::from("")
+                String::from("cat"),
+                String::from("/bin/cat"),
+                String::from("/usr/bin/cat"),
             ],
             behaviour_on_violation: Behaviour::KillProcess,
         }
@@ -110,6 +112,8 @@ pub unsafe extern fn execve(
     argv: *const *const libc::c_char,
     envp: *const *const libc::c_char,
 ) {
+    let configuration = get_configuration();
+
     setup_logger("/tmp/sova.log").unwrap();
     info!("execve runned");
     let path_str = utils::from_pointer_to_string(path.clone());
@@ -121,8 +125,6 @@ pub unsafe extern fn execve(
         argv: argv_vec_str,
         envp: envp_vec_str,
     };
-
-    let configuration = get_configuration();
 
     let analyzer = Analyzer::new(configuration);
 
