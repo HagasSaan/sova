@@ -5,6 +5,7 @@ extern crate log;
 
 use std::ffi::CStr;
 use std::{env, mem};
+use std::time::Instant;
 
 use log::{info, warn};
 
@@ -35,14 +36,21 @@ lazy_static! {
 }
 
 #[no_mangle]
-pub unsafe extern fn execv(path: *const libc::c_char, argv: *const *const libc::c_char) {
+pub unsafe extern fn execv(
+    path: *const libc::c_char,
+    argv: *const *const libc::c_char,
+) {
+    let start_time = Instant::now();
+
     let config_path = env::var("SOVA_CONFIG")
         .expect("Config path location not set in SOVA_CONFIG environment variable");
 
     let configuration = Configuration::load(&config_path)
         .expect("Could not load configuration");
 
-    setup_logger("/tmp/sova.log").expect("Could not setup logger");
+    setup_logger(&configuration.logfile_path)
+        .expect("Could not setup logger");
+
     info!("execv runned");
     let path_str = utils::from_pointer_to_string(path.clone());
     let argv_vec_str = utils::from_arr_ptr_to_vec(argv.clone());
@@ -57,23 +65,24 @@ pub unsafe extern fn execv(path: *const libc::c_char, argv: *const *const libc::
 
     let behaviour = analyzer.analyze(record);
 
+    info!("Analysis done with {} seconds", start_time.elapsed().as_secs_f64());
+
     match behaviour {
         Behaviour::KillSystem => {
-            warn!("Killing system");
+            warn!("Behaviour: killing system");
             // TODO: kill system, really
         },
         Behaviour::KillProcess => {
-            warn!("Killing process");
+            warn!("Behaviour: killing process");
             return;
         },
         Behaviour::LogOnly => {
-            info!("Logging only");
+            info!("Behaviour: logging only");
         },
     };
 
     ORIGINAL_EXECV(path, argv)
 }
-
 
 lazy_static! {
     static ref ORIGINAL_EXECVE: extern fn(
@@ -94,13 +103,17 @@ pub unsafe extern fn execve(
     argv: *const *const libc::c_char,
     envp: *const *const libc::c_char,
 ) {
+    let start_time = Instant::now();
+
     let config_path = env::var("SOVA_CONFIG")
         .expect("Config path location not set in SOVA_CONFIG environment variable");
 
     let configuration = Configuration::load(&config_path)
         .expect("Could not load configuration");
 
-    setup_logger("/tmp/sova.log").unwrap();
+    setup_logger(&configuration.logfile_path)
+        .expect("Could not setup logger");
+
     info!("execve runned");
     let path_str = utils::from_pointer_to_string(path.clone());
     let argv_vec_str = utils::from_arr_ptr_to_vec(argv.clone());
@@ -115,6 +128,8 @@ pub unsafe extern fn execve(
     let analyzer = Analyzer::new(configuration);
 
     let behaviour = analyzer.analyze(record);
+
+    info!("Analysis done with {} seconds", start_time.elapsed().as_secs_f64());
 
     match behaviour {
         Behaviour::KillSystem => {

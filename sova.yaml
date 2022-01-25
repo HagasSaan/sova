@@ -1,10 +1,10 @@
 ---
 behaviour_on_incidents: KillSystem
+logfile_path: "/var/log/sova.log"
 rules:
   - subject: path
     condition: MustBeIn
     objects:
-      - cat
       - /bin/cat
-      - /usr/bin/cat
+      - /bin/ps
     behaviour_on_violation: KillProcess
