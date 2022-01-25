@@ -51,7 +51,7 @@ pub unsafe extern fn execv(
     setup_logger(&configuration.logfile_path)
         .expect("Could not setup logger");
 
-    info!("execv runned");
+    info!("execv ran");
     let path_str = utils::from_pointer_to_string(path.clone());
     let argv_vec_str = utils::from_arr_ptr_to_vec(argv.clone());
 
@@ -114,7 +114,7 @@ pub unsafe extern fn execve(
     setup_logger(&configuration.logfile_path)
         .expect("Could not setup logger");
 
-    info!("execve runned");
+    info!("execve ran");
     let path_str = utils::from_pointer_to_string(path.clone());
     let argv_vec_str = utils::from_arr_ptr_to_vec(argv.clone());
     let envp_vec_str = utils::from_arr_ptr_to_vec(envp.clone());

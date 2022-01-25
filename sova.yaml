@@ -7,4 +7,6 @@ rules:
     objects:
       - /bin/cat
       - /bin/ps
+      - /bin/env
+      - /usr/bin/env
     behaviour_on_violation: KillProcess
