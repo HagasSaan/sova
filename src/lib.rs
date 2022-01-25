@@ -4,15 +4,15 @@ extern crate libc;
 extern crate log;
 
 use std::ffi::CStr;
-use std::mem;
+use std::{env, mem};
+
+use log::{info, warn};
 
 use analyzer::Analyzer;
 use behaviour::Behaviour;
 use configuration::Configuration;
 use logger::setup_logger;
 use record::Record;
-use rule::{ConditionType, Rule};
-use log::{debug, error, info, trace, warn};
 
 mod utils;
 mod analyzer;
@@ -36,9 +36,13 @@ lazy_static! {
 
 #[no_mangle]
 pub unsafe extern fn execv(path: *const libc::c_char, argv: *const *const libc::c_char) {
-    let configuration = get_configuration();
+    let config_path = env::var("SOVA_CONFIG")
+        .expect("Config path location not set in SOVA_CONFIG environment variable");
 
-    setup_logger("/tmp/sova.log").unwrap();
+    let configuration = Configuration::load(&config_path)
+        .expect("Could not load configuration");
+
+    setup_logger("/tmp/sova.log").expect("Could not setup logger");
     info!("execv runned");
     let path_str = utils::from_pointer_to_string(path.clone());
     let argv_vec_str = utils::from_arr_ptr_to_vec(argv.clone());
@@ -70,28 +74,6 @@ pub unsafe extern fn execv(path: *const libc::c_char, argv: *const *const libc::
     ORIGINAL_EXECV(path, argv)
 }
 
-fn get_configuration() -> Configuration {
-    let rules = vec![
-        Rule {
-            subject: String::from("path"),
-            condition: ConditionType::MustBeIn,
-            objects: vec![
-                String::from("cat"),
-                String::from("/bin/cat"),
-                String::from("/usr/bin/cat"),
-            ],
-            behaviour_on_violation: Behaviour::KillProcess,
-        }
-    ];
-
-    let configuration = Configuration {
-        behaviour_on_incidents: Behaviour::KillSystem,
-        rules,
-    };
-
-    configuration
-}
-
 
 lazy_static! {
     static ref ORIGINAL_EXECVE: extern fn(
@@ -112,7 +94,11 @@ pub unsafe extern fn execve(
     argv: *const *const libc::c_char,
     envp: *const *const libc::c_char,
 ) {
-    let configuration = get_configuration();
+    let config_path = env::var("SOVA_CONFIG")
+        .expect("Config path location not set in SOVA_CONFIG environment variable");
+
+    let configuration = Configuration::load(&config_path)
+        .expect("Could not load configuration");
 
     setup_logger("/tmp/sova.log").unwrap();
     info!("execve runned");

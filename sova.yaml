@@ -1,0 +1,10 @@
+---
+behaviour_on_incidents: KillSystem
+rules:
+  - subject: path
+    condition: MustBeIn
+    objects:
+      - cat
+      - /bin/cat
+      - /usr/bin/cat
+    behaviour_on_violation: KillProcess

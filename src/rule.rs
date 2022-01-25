@@ -1,7 +1,9 @@
-use behaviour::Behaviour;
-use Record;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug)]
+use crate::behaviour::Behaviour;
+use crate::Record;
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub enum ConditionType {
     MustBeIn,
     MustNotBeIn,
@@ -12,7 +14,8 @@ pub enum RuleResult {
     Fail,
 }
 
-#[derive(Debug)]
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Rule {
     pub subject: String,
     pub condition: ConditionType,

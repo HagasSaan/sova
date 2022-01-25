@@ -1,8 +1,9 @@
-use Record;
-use rule::RuleResult;
+use log::{debug, warn};
+
 use crate::behaviour::Behaviour;
 use crate::configuration::Configuration;
-use log::{debug, error, info, trace, warn};
+use crate::Record;
+use crate::rule::RuleResult;
 
 pub struct Analyzer {
     configuration: Configuration,
