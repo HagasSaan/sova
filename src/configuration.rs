@@ -1,6 +1,7 @@
 use std::fs::File;
 use std::io::{Read, Write};
 use serde::{Deserialize, Serialize};
+use std::env;
 
 use crate::behaviour::Behaviour;
 use crate::rule::Rule;
@@ -9,7 +10,7 @@ use crate::rule::Rule;
 pub struct Configuration {
     pub behaviour_on_incidents: Behaviour,
     pub rules: Vec<Rule>,
-    pub logfile_path: String,
+    pub logfile_path: Option<String>,
 }
 
 impl Configuration {
@@ -39,4 +40,19 @@ impl Configuration {
 
         Ok(())
     }
+}
+
+pub fn load_configuration() -> Configuration {
+    let config_path = match env::var("SOVA_CONFIG") {
+        Ok(path) => path,
+        Err(e) => {
+            println!("Error {:?} on SOVA_CONFIG loading, trying default path", e);
+            String::from("/etc/sova/sova.yaml")
+        },
+    };
+
+    let configuration = Configuration::load(&config_path)
+        .expect("Could not load configuration");
+
+    configuration
 }

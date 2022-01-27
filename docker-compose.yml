@@ -6,3 +6,5 @@ services:
       - SOVA_CONFIG=/etc/sova/sova.yaml
     volumes:
       - ./sova.yaml:/etc/sova/sova.yaml
+    ports:
+      - "5000:5000"

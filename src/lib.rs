@@ -4,14 +4,13 @@ extern crate libc;
 extern crate log;
 
 use std::ffi::CStr;
-use std::{env, mem};
+use std::mem;
 use std::time::Instant;
-
+use libc::c_int;
 use log::{info, warn};
 
 use analyzer::Analyzer;
 use behaviour::Behaviour;
-use configuration::Configuration;
 use logger::setup_logger;
 use record::Record;
 
@@ -27,7 +26,7 @@ lazy_static! {
     static ref ORIGINAL_EXECV: extern fn(
         *const libc::c_char,
         *const *const libc::c_char
-    ) = unsafe {
+    ) -> c_int = unsafe {
         let fn_name = CStr::from_bytes_with_nul(b"execv\0").unwrap();
         let fn_ptr = libc::dlsym(libc::RTLD_NEXT, fn_name.as_ptr());
 
@@ -39,17 +38,17 @@ lazy_static! {
 pub unsafe extern fn execv(
     path: *const libc::c_char,
     argv: *const *const libc::c_char,
-) {
+) -> c_int {
     let start_time = Instant::now();
 
-    let config_path = env::var("SOVA_CONFIG")
-        .expect("Config path location not set in SOVA_CONFIG environment variable");
+    let configuration = configuration::load_configuration();
 
-    let configuration = Configuration::load(&config_path)
-        .expect("Could not load configuration");
-
-    setup_logger(&configuration.logfile_path)
-        .expect("Could not setup logger");
+    match setup_logger(&configuration.logfile_path) {
+        Ok(_) => {},
+        Err(e) => {
+            println!("Could not setup logger: {:?}", e);
+        },
+    }
 
     info!("execv ran");
     let path_str = utils::from_pointer_to_string(path.clone());
@@ -74,7 +73,7 @@ pub unsafe extern fn execv(
         },
         Behaviour::KillProcess => {
             warn!("Behaviour: killing process");
-            return;
+            return -1;
         },
         Behaviour::LogOnly => {
             info!("Behaviour: logging only");
@@ -89,7 +88,7 @@ lazy_static! {
         *const libc::c_char,
         *const *const libc::c_char,
         *const *const libc::c_char,
-    ) = unsafe {
+    ) -> c_int = unsafe {
         let fn_name = CStr::from_bytes_with_nul(b"execve\0").unwrap();
         let fn_ptr = libc::dlsym(libc::RTLD_NEXT, fn_name.as_ptr());
 
@@ -102,17 +101,17 @@ pub unsafe extern fn execve(
     path: *const libc::c_char,
     argv: *const *const libc::c_char,
     envp: *const *const libc::c_char,
-) {
+) -> c_int {
     let start_time = Instant::now();
 
-    let config_path = env::var("SOVA_CONFIG")
-        .expect("Config path location not set in SOVA_CONFIG environment variable");
+    let configuration = configuration::load_configuration();
 
-    let configuration = Configuration::load(&config_path)
-        .expect("Could not load configuration");
-
-    setup_logger(&configuration.logfile_path)
-        .expect("Could not setup logger");
+    match setup_logger(&configuration.logfile_path) {
+        Ok(_) => {},
+        Err(e) => {
+            println!("Could not setup logger: {:?}", e);
+        },
+    }
 
     info!("execve ran");
     let path_str = utils::from_pointer_to_string(path.clone());
@@ -138,7 +137,7 @@ pub unsafe extern fn execve(
         },
         Behaviour::KillProcess => {
             warn!("Killing process");
-            return;
+            return -1;
         },
         Behaviour::LogOnly => {
             info!("Logging only");
