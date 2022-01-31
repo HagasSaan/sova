@@ -1,8 +1,8 @@
 ---
-behaviour_on_incidents: KillSystem
+behaviour_on_incidents: KillProcess
 logfile_path: "/var/log/sova.log"
 rules:
-  - subject: path
+  - subject: Path
     condition: MustBeIn
     objects:
       - /bin/cat

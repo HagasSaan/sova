@@ -68,10 +68,6 @@ pub unsafe extern fn execv(
     info!("Analysis done with {} seconds", start_time.elapsed().as_secs_f64());
 
     match behaviour {
-        Behaviour::KillSystem => {
-            warn!("Behaviour: killing system");
-            // TODO: kill system, really
-        },
         Behaviour::KillProcess => {
             warn!("Behaviour: killing process");
             return -1;
@@ -133,10 +129,6 @@ pub unsafe extern fn execve(
     info!("Analysis done with {} seconds", start_time.elapsed().as_secs_f64());
 
     match behaviour {
-        Behaviour::KillSystem => {
-            warn!("Killing system");
-            // TODO: kill system, really
-        },
         Behaviour::KillProcess => {
             warn!("Killing process");
             return -1;
