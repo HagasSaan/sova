@@ -3,10 +3,16 @@ behaviour_on_incidents: KillProcess
 logfile_path: "/var/log/sova.log"
 rules:
   - subject: Path
+    behaviour_on_violation: KillProcess
     condition: MustBeIn
     objects:
       - /bin/cat
       - /bin/ps
       - /bin/env
       - /usr/bin/env
+      - /bin/sh
+  - subject: Argv
     behaviour_on_violation: KillProcess
+    condition: MustNotBeIn
+    objects:
+      - /etc/passwd
