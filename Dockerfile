@@ -10,6 +10,9 @@ ENV LD_PRELOAD=/sova/target/release/libsova.so
 COPY ./sova.build.yaml /sova/sova.build.yaml
 ENV SOVA_CONFIG=/sova/sova.build.yaml
 
+COPY ./wrap_bash_builtins.sh /sova/wrap_bash_builtins.sh
+RUN cat /sova/wrap_bash_builtins.sh >> /etc/bash.bashrc
+
 # ----------------------------------------------------------
 # Sample app
 RUN apt update && apt install -y python3 python3-pip
