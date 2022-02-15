@@ -2,9 +2,9 @@ version: '3'
 services:
   test:
     build: .
-    ports:
-      - "5000:5000"
     environment:
-      - SOVA_CONFIG=local/etc/sova/sova.yaml
+      - SOVA_CONFIG=/etc/sova/sova.yaml
     volumes:
       - ./sova.yaml:/etc/sova/sova.yaml
+    ports:
+      - "5000:5000"

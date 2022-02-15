@@ -1,28 +1,29 @@
+use log::debug;
 use serde::{Deserialize, Serialize};
-use crate::configuration::Behaviour;
+
+use crate::behaviour::Behaviour;
 use crate::Record;
 
-#[derive(Clone, Deserialize, Serialize, Hash, Eq, PartialEq, Debug)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub enum Subject {
-    CommandLine,
-    UserID,  // TODO: in progress
-    Filename, // TODO: in progress
-    // NOTE: subjects of record // TODO: move to documentation
+    Path,
+    Argv,
 }
 
-#[derive(Clone, Deserialize, Serialize, Hash, Eq, PartialEq, Debug)]
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub enum ConditionType {
     MustBeIn,
     MustNotBeIn,
 }
 
-#[derive(Clone, Deserialize, Serialize, Hash, Eq, PartialEq, Debug)]
 pub enum RuleResult {
     Pass,
     Fail,
 }
 
-#[derive(Clone, Deserialize, Serialize, Hash, Eq, PartialEq, Debug)]
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Rule {
     pub subject: Subject,
     pub condition: ConditionType,
@@ -31,32 +32,52 @@ pub struct Rule {
 }
 
 impl Rule {
-    pub fn check(&self, record: &Record) -> Result<RuleResult, String> {
-        let subject = self.get_subject(record)?;
-        println!("Got subject: {:?}", subject);
-        match self.condition {
-            ConditionType::MustBeIn => {
-                if self.objects.contains(&subject) {
-                    Ok(RuleResult::Pass)
-                } else {
-                    Ok(RuleResult::Fail)
-                }
-            },
-            ConditionType::MustNotBeIn => {
-                if self.objects.contains(&subject) {
-                    Ok(RuleResult::Fail)
-                } else {
-                    Ok(RuleResult::Pass)
-                }
-            }
+    pub fn check(&self, record: &Record) -> RuleResult {
+        match self.subject {
+            Subject::Path => self.check_by_path(record),
+            Subject::Argv => self.check_by_argv(record),
         }
     }
 
-    fn get_subject(&self, record: &Record) -> Result<String, String> {
-        match self.subject {
-            Subject::CommandLine => Ok(record.cmdline.clone()),
-            Subject::Filename => Ok(record.filename.clone()),
-            _ => Err(String::from("Unknown subject")),
+    fn check_by_argv(&self, record: &Record) -> RuleResult {
+        match &record.argv {
+            None => { RuleResult::Pass },
+            Some(argv) => {
+                for arg in argv {
+                    match self.condition {
+                        ConditionType::MustBeIn => {
+                            if !self.objects.contains(&arg) {
+                                return RuleResult::Fail;
+                            }
+                        },
+                        ConditionType::MustNotBeIn => {
+                            if self.objects.contains(&arg) {
+                                return RuleResult::Fail;
+                            }
+                        },
+                    }
+                }
+                RuleResult::Pass
+            },
+        }
+    }
+
+    fn check_by_path(&self, record: &Record) -> RuleResult {
+        match self.condition {
+            ConditionType::MustBeIn => {
+                if !self.objects.contains(&record.path) {
+                    RuleResult::Fail
+                } else {
+                    RuleResult::Pass
+                }
+            },
+            ConditionType::MustNotBeIn => {
+                if self.objects.contains(&record.path) {
+                    RuleResult::Fail
+                } else {
+                    RuleResult::Pass
+                }
+            },
         }
     }
 }
