@@ -1,0 +1,16 @@
+@startuml
+start
+
+:get config path from environment variable;
+
+if (config path not exists?) then
+    :set default config path;
+endif
+
+:open file with config
+get file config
+build configuration object;
+
+
+stop
+@enduml

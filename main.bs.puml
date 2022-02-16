@@ -1,0 +1,20 @@
+@startuml
+
+start
+
+:load configuration|
+
+:extract path
+extract argv array
+extract envp array
+build record
+build analyzer;
+
+:analyze record|
+
+if (behaviour != KillProcess?) then (yes)
+    :execute process|
+endif
+stop
+
+@enduml

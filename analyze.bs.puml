@@ -1,0 +1,15 @@
+@startuml
+start
+
+while (not all rules checked?)
+    :get next rule;
+    :check record with rule|
+    if (rule violated?) then (yes)
+        :return rule behaviour;
+        stop
+    endif
+endwhile
+
+stop
+
+@enduml
