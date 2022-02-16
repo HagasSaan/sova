@@ -1,0 +1,71 @@
+@startuml
+
+namespace Rule {
+    enum Subject {
+        Path
+        Argv
+    }
+
+    enum ConditionType {
+        MustBeIn
+        MustBeNotIn
+    }
+
+    enum RuleResult {
+        Pass,
+        Fail
+    }
+
+    class Rule {
+        +Subject subject
+        +ConditionType condition
+        +Array[String] objects
+        +Behaviour behaviour_on_violation
+
+        +RuleResult check(Record record)
+        -RuleResult check_by_path(Record record)
+        -RuleResult check_by_argv(Record record)
+    }
+}
+
+enum Behaviour {
+    KillProcess
+    LogOnly
+}
+
+class Record {
+    +String path
+    +Optional[Array[String]] argv
+    +Optional[Array[String]] envp
+}
+
+class Configuration {
+    +Behaviour behaviour_on_incidents
+    +Array[Rule] rules
+    +Optional[String] log_path
+
+    +Configuration load(path: str)
+    +void save(path: str)
+}
+
+class Analyzer {
+    -Configuration configuration
+
+    +Behaviour analyze(Record record)
+}
+
+
+Behaviour --* Configuration
+Rule.Rule --> Configuration
+
+Behaviour --* Rule.Rule
+Rule.ConditionType --* Rule.Rule
+Rule.Subject --* Rule.Rule
+Record <-- Rule.Rule
+Rule.RuleResult <-- Rule.Rule
+
+Analyzer o-- Configuration
+
+Record <-- Analyzer
+
+@enduml
