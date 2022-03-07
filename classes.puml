@@ -2,56 +2,56 @@
 
 namespace Rule {
     enum Subject {
-        Path
-        Argv
+        Path: String
+        Argv: String
     }
 
     enum ConditionType {
-        MustBeIn
-        MustBeNotIn
+        MustBeIn: String
+        MustBeNotIn: String
     }
 
     enum RuleResult {
-        Pass,
-        Fail
+        Pass: String
+        Fail: String
     }
 
     class Rule {
-        +Subject subject
-        +ConditionType condition
-        +Array[String] objects
-        +Behaviour behaviour_on_violation
+        +subject: Subject
+        +condition: ConditionType
+        +objects: Array[String]
+        +behaviour_on_violation: Behaviour
 
-        +RuleResult check(Record record)
-        -RuleResult check_by_path(Record record)
-        -RuleResult check_by_argv(Record record)
+        +check(record: Record): RuleResult
+        -check_by_path(record: Record): RuleResult
+        -check_by_argv(record: Record): RuleResult
     }
 }
 
 enum Behaviour {
-    KillProcess
-    LogOnly
+    KillProcess: String
+    LogOnly: String
 }
 
 class Record {
-    +String path
-    +Optional[Array[String]] argv
-    +Optional[Array[String]] envp
+    +path: String
+    +argv: Optional[Array[String]]
+    +envp: Optional[Array[String]]
 }
 
 class Configuration {
-    +Behaviour behaviour_on_incidents
-    +Array[Rule] rules
-    +Optional[String] log_path
+    +behaviour_on_incidents: Behaviour
+    +rules: Array[Rule]
+    +log_path: Optional[String]
 
-    +Configuration load(path: str)
-    +void save(path: str)
+    +load(path: str): Configuration
+    +save(path: str): void
 }
 
 class Analyzer {
-    -Configuration configuration
+    -configuration: Configuration
 
-    +Behaviour analyze(Record record)
+    +analyze(Record record): Behaviour
 }
 
 
