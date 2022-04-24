@@ -6,12 +6,9 @@ COPY ./src /sova/src
 COPY ./Cargo.toml /sova/Cargo.toml
 RUN cargo build --release
 
-ENV LD_PRELOAD=/sova/target/release/libsova.so
 COPY ./sova.build.yaml /sova/sova.build.yaml
-ENV SOVA_CONFIG=/sova/sova.build.yaml
-
-COPY ./wrap_bash_builtins.sh /sova/wrap_bash_builtins.sh
-RUN cat /sova/wrap_bash_builtins.sh >> /etc/bash.bashrc
+RUN echo '/sova/target/release/libsova.so' > /etc/ld.so.preload
+COPY ./sova_envs.sh /etc/profile.d/sova_envs.sh
 
 # ----------------------------------------------------------
 # Sample app

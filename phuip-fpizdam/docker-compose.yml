@@ -1,0 +1,8 @@
+version: '3'
+services:
+  reproducer:
+    build: reproducer
+    ports:
+      - 8080:80
+  attacker:
+    build: attacker
