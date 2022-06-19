@@ -1,0 +1,9 @@
+---
+behaviour_on_incidents: LogOnly
+logfile_path: "/tmp/sova.log"
+rules:
+  - subject: Path
+    behaviour_on_violation: KillProcess
+    condition: MustNotBeIn
+    objects:
+      - /bin/ls
