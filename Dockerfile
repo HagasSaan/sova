@@ -6,7 +6,8 @@ COPY ./src /sova/src
 COPY ./Cargo.toml /sova/Cargo.toml
 RUN cargo build --release
 
-COPY ./sova.build.yaml /sova/sova.build.yaml
+COPY ./sova.build.yaml /etc/sova/sova.yaml
+ENV SOVA_CONFIG=/etc/sova/sova.yaml
 RUN echo '/sova/target/release/libsova.so' > /etc/ld.so.preload
 COPY ./sova_envs.sh /etc/profile.d/sova_envs.sh
 

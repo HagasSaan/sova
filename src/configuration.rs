@@ -28,6 +28,7 @@ impl Configuration {
         Ok(configuration)
     }
 
+    #[allow(dead_code)]
     pub fn save(&self, path: &str) -> Result<(), &str> {
         let config_str = serde_yaml::to_string(&self)
             .expect("Error on dumping config to string");
