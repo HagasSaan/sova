@@ -1,7 +1,7 @@
 ---
 behaviour_on_incidents: KillProcess
 logfile_path: "/var/log/sova.log"
-rules: []
+rules:
 #  - subject: Path
 #    behaviour_on_violation: KillProcess
 #    condition: MustBeIn
@@ -11,8 +11,8 @@ rules: []
 #      - /bin/env
 #      - /usr/bin/env
 #      - /bin/sh
-#  - subject: Argv
-#    behaviour_on_violation: KillProcess
-#    condition: MustNotBeIn
-#    objects:
-#      - /etc/passwd
+  - subject: Argv
+    behaviour_on_violation: KillProcess
+    condition: MustNotBeIn
+    objects:
+      - /etc/passwd
