@@ -1,31 +1,16 @@
 use serde::{Deserialize, Serialize};
 
 use crate::behaviour::Behaviour;
+use crate::condition::Condition;
 use crate::Record;
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub enum Subject {
-    Path,
-    Argv,
-}
-
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub enum ConditionType {
-    MustBeIn,
-    MustNotBeIn,
-}
-
-pub enum RuleResult {
-    Pass,
-    Fail,
-}
+use crate::rule_result::RuleResult;
+use crate::subject::Subject;
 
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Rule {
     pub subject: Subject,
-    pub condition: ConditionType,
+    pub condition: Condition,
     pub objects: Vec<String>,
     pub behaviour_on_violation: Behaviour,
 }
@@ -44,12 +29,12 @@ impl Rule {
             Some(argv) => {
                 for arg in argv {
                     match self.condition {
-                        ConditionType::MustBeIn => {
+                        Condition::MustBeIn => {
                             if !self.objects.contains(&arg) {
                                 return RuleResult::Fail;
                             }
                         },
-                        ConditionType::MustNotBeIn => {
+                        Condition::MustNotBeIn => {
                             if self.objects.contains(&arg) {
                                 return RuleResult::Fail;
                             }
@@ -63,14 +48,14 @@ impl Rule {
 
     fn check_by_path(&self, record: &Record) -> RuleResult {
         match self.condition {
-            ConditionType::MustBeIn => {
+            Condition::MustBeIn => {
                 if !self.objects.contains(&record.path) {
                     RuleResult::Fail
                 } else {
                     RuleResult::Pass
                 }
             },
-            ConditionType::MustNotBeIn => {
+            Condition::MustNotBeIn => {
                 if self.objects.contains(&record.path) {
                     RuleResult::Fail
                 } else {

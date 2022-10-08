@@ -3,7 +3,7 @@ use log::{debug, warn};
 use crate::behaviour::Behaviour;
 use crate::configuration::Configuration;
 use crate::Record;
-use crate::rule::RuleResult;
+use crate::rule_result::RuleResult;
 
 pub struct Analyzer {
     configuration: Configuration,
