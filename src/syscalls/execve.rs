@@ -4,7 +4,11 @@ use std::time::Instant;
 use libc::c_int;
 use log::{info, warn};
 
-use crate::{Analyzer, Behaviour, configuration, Record, setup_logger, utils};
+use crate::{configuration, utils};
+use crate::analyzer::Analyzer;
+use crate::behaviour::Behaviour;
+use crate::logger::setup_logger;
+use crate::record::Record;
 
 lazy_static! {
     static ref ORIGINAL_EXECVE: extern fn(

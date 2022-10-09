@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::behaviour::Behaviour;
 use crate::condition::Condition;
-use crate::Record;
+use crate::record::Record;
 use crate::rule_result::RuleResult;
 use crate::subject::Subject;
 
