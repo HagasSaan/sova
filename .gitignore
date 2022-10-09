@@ -1,6 +1,5 @@
 /target
 /.idea
 /venv
-Cargo.lock
 a.out
 test.txt
