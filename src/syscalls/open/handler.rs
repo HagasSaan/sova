@@ -1,21 +1,22 @@
+use std::error::Error;
 use std::ffi::CStr;
 use std::mem;
 use std::time::Instant;
-use libc;
+
 use log::{info, warn};
 
 use crate::{configuration, utils};
-use crate::analyzer::Analyzer;
 use crate::behaviour::Behaviour;
 use crate::logger::setup_logger;
-use crate::record::Record;
+use crate::syscalls::open::analyzer::Analyzer;
+use crate::syscalls::open::record::Record;
 
 lazy_static! {
-    static ref ORIGINAL_EXECV: extern fn(
+    static ref ORIGINAL_OPEN: extern fn(
         *const libc::c_char,
-        *const *const libc::c_char
+        libc::c_int
     ) -> libc::c_int = unsafe {
-        let fn_name = CStr::from_bytes_with_nul(b"execv\0").unwrap();
+        let fn_name = CStr::from_bytes_with_nul(b"open\0").unwrap();
         let fn_ptr = libc::dlsym(libc::RTLD_NEXT, fn_name.as_ptr());
 
         mem::transmute(fn_ptr)
@@ -24,9 +25,9 @@ lazy_static! {
 
 
 #[no_mangle]
-pub unsafe extern fn execv(
+pub unsafe extern fn open(
     pathname: *const libc::c_char,
-    argv: *const *const libc::c_char,
+    flags: libc::c_int,
 ) -> libc::c_int {
     let start_time = Instant::now();
 
@@ -35,19 +36,19 @@ pub unsafe extern fn execv(
     match setup_logger(&configuration.logfile_path) {
         Ok(_) => {},
         Err(e) => {
-            println!("Could not setup logger: {:?}, path: {:?}, call: execv", e, &configuration.logfile_path);
+            println!(
+                "Could not setup logger: {:?}, path: {:?}, call: open",
+                e.source(), &configuration.logfile_path
+            );
         },
     }
 
-    info!("execv ran");
+    info!("open ran");
 
     let pathname_str = utils::from_pointer_to_string(pathname.clone());
-    let argv_vec_str = utils::from_arr_ptr_to_vec(argv.clone());
-
     let record: Record = Record {
         pathname: pathname_str,
-        argv: argv_vec_str,
-        envp: None
+        flags
     };
 
     let analyzer = Analyzer::new(configuration);
@@ -58,13 +59,18 @@ pub unsafe extern fn execv(
 
     match behaviour {
         Behaviour::KillProcess => {
-            warn!("Behaviour: killing process");
+            warn!("Killing process");
             return -1;
         },
         Behaviour::LogOnly => {
-            info!("Behaviour: logging only");
+            info!("Logging only");
         },
     };
 
-    ORIGINAL_EXECV(pathname, argv)
+
+    let descriptor = ORIGINAL_OPEN(pathname, flags);
+
+    info!("Return value: {}", descriptor);  // TODO: remove or move to analyzer
+
+    descriptor
 }

@@ -3,14 +3,14 @@
 #[cfg(test)]
 mod tests {
     use crate::behaviour::Behaviour;
-    use crate::condition::Condition;
-    use crate::record::Record;
-    use crate::rule::Rule;
     use crate::rule_result::RuleResult;
-    use crate::subject::Subject;
+    use crate::syscalls::execv::condition::Condition;
+    use crate::syscalls::execv::record::Record;
+    use crate::syscalls::execv::rule::Rule;
+    use crate::syscalls::execv::subject::Subject;
 
     #[test]
-    fn check_by_path_succeeded() {
+    fn check_by_pathname_succeeded() {
         let rule = Rule {
             subject: Subject::Pathname,
             condition: Condition::MustBeIn,
@@ -21,14 +21,13 @@ mod tests {
         let record = Record {
             pathname: "some/path".to_string(),
             argv: None,
-            envp: None
         };
 
         assert_eq!(RuleResult::Pass, rule.check(&record));
     }
 
     #[test]
-    fn check_by_path_failed() {
+    fn check_by_pathname_failed() {
         let rule = Rule {
             subject: Subject::Pathname,
             condition: Condition::MustBeIn,
@@ -39,7 +38,6 @@ mod tests {
         let record = Record {
             pathname: "some/invalid/path".to_string(),
             argv: None,
-            envp: None
         };
 
         assert_eq!(RuleResult::Fail, rule.check(&record));
@@ -57,7 +55,6 @@ mod tests {
         let record = Record {
             pathname: "/usr/bin/cat".to_string(),
             argv: Option::from(vec![String::from("/var/log/sova.log")]),
-            envp: None
         };
 
         assert_eq!(RuleResult::Pass, rule.check(&record));
@@ -75,7 +72,6 @@ mod tests {
         let record = Record {
             pathname: "/usr/bin/cat".to_string(),
             argv: Option::from(vec![String::from("/etc/passwd")]),
-            envp: None
         };
 
         assert_eq!(RuleResult::Fail, rule.check(&record));

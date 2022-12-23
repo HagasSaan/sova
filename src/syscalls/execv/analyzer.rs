@@ -2,8 +2,8 @@ use log::{debug, warn};
 
 use crate::behaviour::Behaviour;
 use crate::configuration::Configuration;
-use crate::record::Record;
 use crate::rule_result::RuleResult;
+use crate::syscalls::execv::record::Record;
 
 pub struct Analyzer {
     configuration: Configuration,
@@ -19,7 +19,13 @@ impl Analyzer {
     pub fn analyze(&self, record: Record) -> Behaviour {
         debug!("record: {:?}", &record);
 
-        for rule in &self.configuration.rules {
+        let rules = &self.configuration.rules.execv;
+
+        if let None = rules {
+            return Behaviour::LogOnly;
+        }
+
+        for rule in rules.as_ref().unwrap() {
             match rule.check(&record) {
                 RuleResult::Pass => {},
                 RuleResult::Fail => {
@@ -30,5 +36,6 @@ impl Analyzer {
         }
 
         Behaviour::LogOnly
+
     }
 }

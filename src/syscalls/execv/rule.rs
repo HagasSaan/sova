@@ -1,10 +1,10 @@
 use serde::{Deserialize, Serialize};
 
 use crate::behaviour::Behaviour;
-use crate::condition::Condition;
-use crate::record::Record;
 use crate::rule_result::RuleResult;
-use crate::subject::Subject;
+use crate::syscalls::execv::condition::Condition;
+use crate::syscalls::execv::record::Record;
+use crate::syscalls::execv::subject::Subject;
 
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -18,7 +18,7 @@ pub struct Rule {
 impl Rule {
     pub fn check(&self, record: &Record) -> RuleResult {
         match self.subject {
-            Subject::Pathname => self.check_by_path(record),
+            Subject::Pathname => self.check_by_pathname(record),
             Subject::Argv => self.check_by_argv(record),
         }
     }
@@ -46,7 +46,7 @@ impl Rule {
         }
     }
 
-    fn check_by_path(&self, record: &Record) -> RuleResult {
+    fn check_by_pathname(&self, record: &Record) -> RuleResult {
         match self.condition {
             Condition::MustBeIn => {
                 if !self.objects.contains(&record.pathname) {
