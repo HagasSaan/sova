@@ -6,6 +6,7 @@ SOVA is docker-based utility to control behaviour by capturing syscalls in the m
 SOVA currently supports capturing of these syscalls
 - [execv](https://man7.org/linux/man-pages/man3/exec.3.html)
 - [execve](https://man7.org/linux/man-pages/man2/execve.2.html)
+- [open](https://man7.org/linux/man-pages/man2/open.2.html)
 
 ## Configuration file example
 
@@ -27,7 +28,7 @@ rules:
 Write Dockerfile as follows
 
 ```dockerfile
-FROM rust:1.58.1-bullseye
+FROM rust:1.66.0-bullseye
 
 RUN mkdir /sova
 WORKDIR /sova
