@@ -18,7 +18,7 @@ pub struct Rule {
 impl Rule {
     pub fn check(&self, record: &Record) -> RuleResult {
         match self.subject {
-            Subject::Path => self.check_by_path(record),
+            Subject::Pathname => self.check_by_path(record),
             Subject::Argv => self.check_by_argv(record),
         }
     }
@@ -49,14 +49,14 @@ impl Rule {
     fn check_by_path(&self, record: &Record) -> RuleResult {
         match self.condition {
             Condition::MustBeIn => {
-                if !self.objects.contains(&record.path) {
+                if !self.objects.contains(&record.pathname) {
                     RuleResult::Fail
                 } else {
                     RuleResult::Pass
                 }
             },
             Condition::MustNotBeIn => {
-                if self.objects.contains(&record.path) {
+                if self.objects.contains(&record.pathname) {
                     RuleResult::Fail
                 } else {
                     RuleResult::Pass

@@ -1,7 +1,7 @@
 # SOVA
 ##### Tool to control unexpected behaviour in your Docker container
 
-SOVA is docker-based utility to control unexpected behaviour by capturing syscalls in the middle and reject them if they are not passing rules for current configuration.
+SOVA is docker-based utility to control behaviour by capturing syscalls in the middle and reject them if they are not passing rules for current configuration.
 
 SOVA currently supports capturing of these syscalls
 - [execv](https://man7.org/linux/man-pages/man3/exec.3.html)
@@ -35,12 +35,11 @@ COPY ./src /sova/src
 COPY ./Cargo.toml /sova/Cargo.toml
 RUN cargo build --release
 
-COPY ./sova.build.yaml /etc/sova/sova.yaml
-ENV SOVA_CONFIG=/etc/sova/sova.yaml
-RUN echo '/sova/target/release/libsova.so' > /etc/ld.so.preload
 
 ### Your app installation steps
 
+# Enable Sova
+RUN echo '/sova/target/release/libsova.so' > /etc/ld.so.preload
 # Add your configuration file 
 COPY ./sova.yaml /etc/sova/sova.yaml
 ```

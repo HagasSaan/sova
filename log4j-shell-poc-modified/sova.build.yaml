@@ -1,4 +1,0 @@
----
-behaviour_on_incidents: LogOnly
-logfile_path:
-rules: []

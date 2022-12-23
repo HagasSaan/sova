@@ -1,3 +1,5 @@
+// TODO: move to tests dir
+
 #[cfg(test)]
 mod tests {
     use crate::behaviour::Behaviour;
@@ -10,14 +12,14 @@ mod tests {
     #[test]
     fn check_by_path_succeeded() {
         let rule = Rule {
-            subject: Subject::Path,
+            subject: Subject::Pathname,
             condition: Condition::MustBeIn,
             objects: vec![String::from("some/path")],
             behaviour_on_violation: Behaviour::KillProcess
         };
 
         let record = Record {
-            path: "some/path".to_string(),
+            pathname: "some/path".to_string(),
             argv: None,
             envp: None
         };
@@ -28,14 +30,14 @@ mod tests {
     #[test]
     fn check_by_path_failed() {
         let rule = Rule {
-            subject: Subject::Path,
+            subject: Subject::Pathname,
             condition: Condition::MustBeIn,
             objects: vec![String::from("some/path")],
             behaviour_on_violation: Behaviour::KillProcess
         };
 
         let record = Record {
-            path: "some/invalid/path".to_string(),
+            pathname: "some/invalid/path".to_string(),
             argv: None,
             envp: None
         };
@@ -53,7 +55,7 @@ mod tests {
         };
 
         let record = Record {
-            path: "/usr/bin/cat".to_string(),
+            pathname: "/usr/bin/cat".to_string(),
             argv: Option::from(vec![String::from("/var/log/sova.log")]),
             envp: None
         };
@@ -71,7 +73,7 @@ mod tests {
         };
 
         let record = Record {
-            path: "/usr/bin/cat".to_string(),
+            pathname: "/usr/bin/cat".to_string(),
             argv: Option::from(vec![String::from("/etc/passwd")]),
             envp: None
         };

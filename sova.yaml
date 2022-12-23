@@ -2,7 +2,7 @@
 behaviour_on_incidents: KillProcess
 logfile_path: "/var/log/sova.log"
 rules:
-#  - subject: Path
+#  - subject: Pathname
 #    behaviour_on_violation: KillProcess
 #    condition: MustBeIn
 #    objects:
