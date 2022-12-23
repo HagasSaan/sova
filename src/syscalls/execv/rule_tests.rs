@@ -15,7 +15,7 @@ mod tests {
             subject: Subject::Pathname,
             condition: Condition::MustBeIn,
             objects: vec![String::from("some/path")],
-            behaviour_on_violation: Behaviour::KillProcess
+            behaviour_on_violation: Behaviour::KillProcess,
         };
 
         let record = Record {
@@ -32,7 +32,7 @@ mod tests {
             subject: Subject::Pathname,
             condition: Condition::MustBeIn,
             objects: vec![String::from("some/path")],
-            behaviour_on_violation: Behaviour::KillProcess
+            behaviour_on_violation: Behaviour::KillProcess,
         };
 
         let record = Record {
@@ -49,7 +49,7 @@ mod tests {
             subject: Subject::Argv,
             condition: Condition::MustNotBeIn,
             objects: vec![String::from("/etc/passwd")],
-            behaviour_on_violation: Behaviour::KillProcess
+            behaviour_on_violation: Behaviour::KillProcess,
         };
 
         let record = Record {
@@ -66,7 +66,7 @@ mod tests {
             subject: Subject::Argv,
             condition: Condition::MustNotBeIn,
             objects: vec![String::from("/etc/passwd")],
-            behaviour_on_violation: Behaviour::KillProcess
+            behaviour_on_violation: Behaviour::KillProcess,
         };
 
         let record = Record {
@@ -76,5 +76,4 @@ mod tests {
 
         assert_eq!(RuleResult::Fail, rule.check(&record));
     }
-
 }

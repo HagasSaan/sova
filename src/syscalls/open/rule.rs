@@ -3,8 +3,8 @@ use serde::{Deserialize, Serialize};
 use crate::behaviour::Behaviour;
 use crate::rule_result::RuleResult;
 use crate::syscalls::open::condition::Condition;
-use crate::syscalls::open::subject::Subject;
 use crate::syscalls::open::record::Record;
+use crate::syscalls::open::subject::Subject;
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Rule {
@@ -13,7 +13,6 @@ pub struct Rule {
     pub objects: Vec<String>,
     pub behaviour_on_violation: Behaviour,
 }
-
 
 impl Rule {
     pub fn check(&self, record: &Record) -> RuleResult {
@@ -31,14 +30,14 @@ impl Rule {
                 } else {
                     RuleResult::Pass
                 }
-            },
+            }
             Condition::MustNotBeIn => {
                 if self.objects.contains(&record.pathname) {
                     RuleResult::Fail
                 } else {
                     RuleResult::Pass
                 }
-            },
+            }
         }
     }
 }

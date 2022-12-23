@@ -1,6 +1,6 @@
 pub fn setup_logger(path: &Option<String>) -> Result<(), fern::InitError> {
     match path {
-        None => {},
+        None => {}
         Some(path) => {
             fern::Dispatch::new()
                 .format(|out, message, record| {

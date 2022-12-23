@@ -6,7 +6,6 @@ use crate::syscalls::execve::condition::Condition;
 use crate::syscalls::execve::record::Record;
 use crate::syscalls::execve::subject::Subject;
 
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Rule {
     pub subject: Subject,
@@ -25,7 +24,7 @@ impl Rule {
 
     fn check_by_argv(&self, record: &Record) -> RuleResult {
         match &record.argv {
-            None => { RuleResult::Pass },
+            None => RuleResult::Pass,
             Some(argv) => {
                 for arg in argv {
                     match self.condition {
@@ -33,16 +32,16 @@ impl Rule {
                             if !self.objects.contains(arg) {
                                 return RuleResult::Fail;
                             }
-                        },
+                        }
                         Condition::MustNotBeIn => {
                             if self.objects.contains(arg) {
                                 return RuleResult::Fail;
                             }
-                        },
+                        }
                     }
                 }
                 RuleResult::Pass
-            },
+            }
         }
     }
 
@@ -54,14 +53,14 @@ impl Rule {
                 } else {
                     RuleResult::Pass
                 }
-            },
+            }
             Condition::MustNotBeIn => {
                 if self.objects.contains(&record.pathname) {
                     RuleResult::Fail
                 } else {
                     RuleResult::Pass
                 }
-            },
+            }
         }
     }
 }

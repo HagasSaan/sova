@@ -11,9 +11,7 @@ pub struct Analyzer {
 
 impl Analyzer {
     pub fn new(configuration: Configuration) -> Self {
-        Analyzer {
-            configuration
-        }
+        Analyzer { configuration }
     }
 
     pub fn analyze(&self, record: Record) -> Behaviour {
@@ -27,11 +25,11 @@ impl Analyzer {
 
         for rule in rules.as_ref().unwrap() {
             match rule.check(&record) {
-                RuleResult::Pass => {},
+                RuleResult::Pass => {}
                 RuleResult::Fail => {
                     warn!("rule violated: {:?}", rule);
-                    return rule.behaviour_on_violation.clone()
-                },
+                    return rule.behaviour_on_violation.clone();
+                }
             }
         }
 
