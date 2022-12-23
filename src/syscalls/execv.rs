@@ -25,7 +25,7 @@ lazy_static! {
 
 #[no_mangle]
 pub unsafe extern fn execv(
-    path: *const libc::c_char,
+    pathname: *const libc::c_char,
     argv: *const *const libc::c_char,
 ) -> libc::c_int {
     let start_time = Instant::now();
@@ -35,17 +35,17 @@ pub unsafe extern fn execv(
     match setup_logger(&configuration.logfile_path) {
         Ok(_) => {},
         Err(e) => {
-            println!("Could not setup logger: {:?}, path: {:?}", e, &configuration.logfile_path);
+            println!("Could not setup logger: {:?}, path: {:?}, call: execv", e, &configuration.logfile_path);
         },
     }
 
     info!("execv ran");
 
-    let path_str = utils::from_pointer_to_string(path.clone());
+    let pathname_str = utils::from_pointer_to_string(pathname.clone());
     let argv_vec_str = utils::from_arr_ptr_to_vec(argv.clone());
 
     let record: Record = Record {
-        path: path_str,
+        pathname: pathname_str,
         argv: argv_vec_str,
         envp: None
     };
@@ -66,5 +66,5 @@ pub unsafe extern fn execv(
         },
     };
 
-    ORIGINAL_EXECV(path, argv)
+    ORIGINAL_EXECV(pathname, argv)
 }

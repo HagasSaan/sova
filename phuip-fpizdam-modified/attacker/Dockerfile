@@ -1,9 +1,0 @@
-FROM golang:1.14-alpine
-
-RUN mkdir /src
-COPY . /src
-
-WORKDIR /src
-RUN go build
-
-CMD ["sleep", "infinity"]

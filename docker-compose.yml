@@ -2,8 +2,6 @@ version: '3'
 services:
   test:
     build: .
-    environment:
-      - SOVA_CONFIG=/etc/sova/sova.yaml
     volumes:
       - ./sova.yaml:/etc/sova/sova.yaml
     ports:
