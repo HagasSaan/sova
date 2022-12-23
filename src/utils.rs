@@ -5,7 +5,7 @@ use std::slice;
 pub unsafe fn get_array_size(argv_clone: *const *const c_char) -> usize {
     let mut array_size = 0;
     let mut p = argv_clone;
-    while *p != std::ptr::null() {
+    while !(*p).is_null() {
         array_size += 1;
         p = p.offset(1);
     }

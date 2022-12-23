@@ -45,7 +45,7 @@ pub unsafe extern fn open(
 
     info!("open ran");
 
-    let pathname_str = utils::from_pointer_to_string(pathname.clone());
+    let pathname_str = utils::from_pointer_to_string(pathname);
     let record: Record = Record {
         pathname: pathname_str,
         flags

@@ -21,7 +21,7 @@ impl Analyzer {
 
         let rules = &self.configuration.rules.execv;
 
-        if let None = rules {
+        if rules.is_none() {
             return Behaviour::LogOnly;
         }
 

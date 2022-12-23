@@ -33,13 +33,11 @@ impl Configuration {
         input.read_to_string(&mut config_str)
             .expect("Error on reading file");
 
-        let configuration = serde_yaml::from_str(&*config_str)
-            .expect("Error on loading configuration from content");
-
-        configuration
+        serde_yaml::from_str(&config_str)
+            .expect("Error on loading configuration from content")
     }
 
-    pub fn save(&self, path: &str) -> () {
+    pub fn save(&self, path: &str) {
         let config_str = serde_yaml::to_string(&self)
             .expect("Error on dumping config to string");
 
@@ -48,8 +46,6 @@ impl Configuration {
 
         output.write_all(config_str.as_ref())
             .expect("Error on writing content to file");
-
-        ()
     }
 }
 

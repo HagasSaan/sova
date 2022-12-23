@@ -28,5 +28,10 @@ jobs:
       - name: Build
         run: cargo build --verbose
 
+      - name: Run linter
+      - uses: actions-rs/clippy-check@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Run tests
         run: cargo test --verbose

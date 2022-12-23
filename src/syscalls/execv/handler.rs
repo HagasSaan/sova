@@ -46,8 +46,8 @@ pub unsafe extern fn execv(
 
     info!("execv ran");
 
-    let pathname_str = utils::from_pointer_to_string(pathname.clone());
-    let argv_vec_str = utils::from_arr_ptr_to_vec(argv.clone());
+    let pathname_str = utils::from_pointer_to_string(pathname);
+    let argv_vec_str = utils::from_arr_ptr_to_vec(argv);
 
     let record: Record = Record {
         pathname: pathname_str,

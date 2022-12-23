@@ -30,12 +30,12 @@ impl Rule {
                 for arg in argv {
                     match self.condition {
                         Condition::MustBeIn => {
-                            if !self.objects.contains(&arg) {
+                            if !self.objects.contains(arg) {
                                 return RuleResult::Fail;
                             }
                         },
                         Condition::MustNotBeIn => {
-                            if self.objects.contains(&arg) {
+                            if self.objects.contains(arg) {
                                 return RuleResult::Fail;
                             }
                         },
