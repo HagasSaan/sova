@@ -2,10 +2,10 @@
 mod tests {
     use crate::syscalls::common::behaviour::Behaviour;
     use crate::syscalls::common::rule_result::RuleResult;
-    use crate::syscalls::execv::condition::Condition;
-    use crate::syscalls::execv::record::Record;
-    use crate::syscalls::execv::rule::Rule;
-    use crate::syscalls::execv::subject::Subject;
+    use crate::syscalls::execve::condition::Condition;
+    use crate::syscalls::execve::record::Record;
+    use crate::syscalls::execve::rule::Rule;
+    use crate::syscalls::execve::subject::Subject;
 
     #[test]
     fn check_by_pathname_succeeded() {
@@ -19,6 +19,7 @@ mod tests {
         let record = Record {
             pathname: "some/path".to_string(),
             argv: None,
+            envp: None
         };
 
         assert_eq!(RuleResult::Pass, rule.check(&record));
@@ -36,6 +37,7 @@ mod tests {
         let record = Record {
             pathname: "some/invalid/path".to_string(),
             argv: None,
+            envp: None
         };
 
         assert_eq!(RuleResult::Fail, rule.check(&record));
@@ -53,6 +55,7 @@ mod tests {
         let record = Record {
             pathname: "/usr/bin/cat".to_string(),
             argv: Option::from(vec![String::from("/var/log/sova.log")]),
+            envp: None
         };
 
         assert_eq!(RuleResult::Pass, rule.check(&record));
@@ -70,6 +73,7 @@ mod tests {
         let record = Record {
             pathname: "/usr/bin/cat".to_string(),
             argv: Option::from(vec![String::from("/etc/passwd")]),
+            envp: None
         };
 
         assert_eq!(RuleResult::Fail, rule.check(&record));
