@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
-use crate::behaviour::Behaviour;
-use crate::rule_result::RuleResult;
+use crate::syscalls::common::behaviour::Behaviour;
+use crate::syscalls::common::rule_result::RuleResult;
 use crate::syscalls::open::condition::Condition;
 use crate::syscalls::open::record::Record;
 use crate::syscalls::open::subject::Subject;

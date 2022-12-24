@@ -1,13 +1,15 @@
-use crate::behaviour::Behaviour;
-use crate::logger::setup_logger;
-use crate::syscalls::execve::analyzer::Analyzer;
-use crate::syscalls::execve::record::Record;
-use crate::{configuration, utils};
-use log::{info, warn};
 use std::error::Error;
 use std::ffi::CStr;
 use std::mem;
 use std::time::Instant;
+
+use log::{info, warn};
+
+use crate::syscalls::common::behaviour::Behaviour;
+use crate::syscalls::common::logger::setup_logger;
+use crate::syscalls::common::{configuration, utils};
+use crate::syscalls::execve::analyzer::Analyzer;
+use crate::syscalls::execve::record::Record;
 
 lazy_static! {
     static ref ORIGINAL_EXECVE: extern "C" fn(

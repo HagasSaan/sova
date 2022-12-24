@@ -5,11 +5,11 @@ use std::time::Instant;
 
 use log::{info, warn};
 
-use crate::behaviour::Behaviour;
-use crate::logger::setup_logger;
+use crate::syscalls::common::behaviour::Behaviour;
+use crate::syscalls::common::logger::setup_logger;
+use crate::syscalls::common::{configuration, utils};
 use crate::syscalls::execv::analyzer::Analyzer;
 use crate::syscalls::execv::record::Record;
-use crate::{configuration, utils};
 
 lazy_static! {
     static ref ORIGINAL_EXECV: extern "C" fn(*const libc::c_char, *const *const libc::c_char) -> libc::c_int = unsafe {

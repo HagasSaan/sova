@@ -1,8 +1,8 @@
 use log::{debug, warn};
 
-use crate::behaviour::Behaviour;
-use crate::configuration::Configuration;
-use crate::rule_result::RuleResult;
+use crate::syscalls::common::behaviour::Behaviour;
+use crate::syscalls::common::configuration::Configuration;
+use crate::syscalls::common::rule_result::RuleResult;
 use crate::syscalls::open::record::Record;
 
 pub struct Analyzer {
