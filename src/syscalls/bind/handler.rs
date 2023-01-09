@@ -3,21 +3,17 @@ use std::ffi::CStr;
 use std::mem;
 use std::time::Instant;
 
-use log::{info, warn};
 use crate::syscalls::bind::analyzer::Analyzer;
 use crate::syscalls::bind::record::Record;
 use crate::syscalls::bind::sockaddr_in::SockaddrIn;
+use log::{info, warn};
 
 use crate::syscalls::common::behaviour::Behaviour;
+use crate::syscalls::common::configuration;
 use crate::syscalls::common::logger::setup_logger;
-use crate::syscalls::common::{configuration};
 
 lazy_static! {
-    static ref ORIGINAL_BIND: extern "C" fn(
-        libc::c_int,
-        *const libc::sockaddr_in,
-        libc::socklen_t,
-    ) -> libc::c_int = unsafe {
+    static ref ORIGINAL_BIND: extern "C" fn(libc::c_int, *const libc::sockaddr_in, libc::socklen_t) -> libc::c_int = unsafe {
         let fn_name = CStr::from_bytes_with_nul(b"bind\0").unwrap();
         let fn_ptr = libc::dlsym(libc::RTLD_NEXT, fn_name.as_ptr());
 
@@ -29,7 +25,7 @@ lazy_static! {
 pub unsafe extern "C" fn bind(
     sockfd: libc::c_int,
     addr: *const libc::sockaddr_in,
-    addrlen: libc::socklen_t
+    addrlen: libc::socklen_t,
 ) -> libc::c_int {
     let start_time = Instant::now();
 
@@ -53,7 +49,7 @@ pub unsafe extern "C" fn bind(
     let record: Record = Record {
         sockfd,
         addr: addr_struct,
-        addrlen
+        addrlen,
     };
 
     let analyzer = Analyzer::new(configuration);

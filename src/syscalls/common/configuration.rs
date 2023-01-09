@@ -4,11 +4,11 @@ use std::fs::File;
 use std::io::{Read, Write};
 use std::path::Path;
 
+use crate::syscalls::bind::rule::Rule as BindRule;
 use crate::syscalls::common::behaviour::Behaviour;
 use crate::syscalls::execv::rule::Rule as ExecvRule;
 use crate::syscalls::execve::rule::Rule as ExecveRule;
 use crate::syscalls::open::rule::Rule as OpenRule;
-use crate::syscalls::bind::rule::Rule as BindRule;
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Rules {

@@ -19,7 +19,7 @@ mod tests {
         let record = Record {
             pathname: "some/path".to_string(),
             argv: None,
-            envp: None
+            envp: None,
         };
 
         assert_eq!(RuleResult::Pass, rule.check(&record));
@@ -37,7 +37,7 @@ mod tests {
         let record = Record {
             pathname: "some/invalid/path".to_string(),
             argv: None,
-            envp: None
+            envp: None,
         };
 
         assert_eq!(RuleResult::Fail, rule.check(&record));
@@ -55,7 +55,7 @@ mod tests {
         let record = Record {
             pathname: "/usr/bin/cat".to_string(),
             argv: Option::from(vec![String::from("/var/log/sova.log")]),
-            envp: None
+            envp: None,
         };
 
         assert_eq!(RuleResult::Pass, rule.check(&record));
@@ -73,7 +73,7 @@ mod tests {
         let record = Record {
             pathname: "/usr/bin/cat".to_string(),
             argv: Option::from(vec![String::from("/etc/passwd")]),
-            envp: None
+            envp: None,
         };
 
         assert_eq!(RuleResult::Fail, rule.check(&record));
