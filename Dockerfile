@@ -1,5 +1,8 @@
 FROM rust:1.66.0-bullseye
 
+RUN apt update && apt install -y netcat
+
+
 RUN mkdir /sova
 WORKDIR /sova
 COPY ./src /sova/src

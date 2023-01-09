@@ -8,12 +8,14 @@ use crate::syscalls::common::behaviour::Behaviour;
 use crate::syscalls::execv::rule::Rule as ExecvRule;
 use crate::syscalls::execve::rule::Rule as ExecveRule;
 use crate::syscalls::open::rule::Rule as OpenRule;
+use crate::syscalls::bind::rule::Rule as BindRule;
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Rules {
     pub execv: Option<Vec<ExecvRule>>,
     pub execve: Option<Vec<ExecveRule>>,
     pub open: Option<Vec<OpenRule>>,
+    pub bind: Option<Vec<BindRule>>,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -54,6 +56,7 @@ fn build_default_configuration() -> Configuration {
             execv: None,
             execve: None,
             open: None,
+            bind: None,
         },
     }
 }
