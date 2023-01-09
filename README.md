@@ -7,6 +7,7 @@ SOVA currently supports capturing of these syscalls
 - [execv](https://man7.org/linux/man-pages/man3/exec.3.html)
 - [execve](https://man7.org/linux/man-pages/man2/execve.2.html)
 - [open](https://man7.org/linux/man-pages/man2/open.2.html)
+- [bind](https://man7.org/linux/man-pages/man2/bind.2.html)
 
 ## Configuration file example
 

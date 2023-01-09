@@ -23,3 +23,10 @@ rules:
       condition: MustNotBeIn
       objects:
         - /etc/blabla
+  bind:
+    - subject: Port
+      behaviour_on_violation: KillProcess
+      condition: MustNotBeIn
+      objects:
+        - 4445
+        - 7878
