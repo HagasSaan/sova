@@ -17,6 +17,7 @@ SOVA currently supports capturing of these syscalls
 behaviour_on_incidents: KillProcess
 logfile_path: "/var/log/sova.log"
 rules:
+  execve:
   - subject: Argv
     behaviour_on_violation: KillProcess
     condition: MustNotBeIn
