@@ -9,7 +9,7 @@ SOVA currently supports capturing of these syscalls
 - [open](https://man7.org/linux/man-pages/man2/open.2.html)
 - [bind](https://man7.org/linux/man-pages/man2/bind.2.html)
 - [connect](https://man7.org/linux/man-pages/man2/connect.2.html)
-exa
+
 ## Configuration file example
 
 ```yaml
