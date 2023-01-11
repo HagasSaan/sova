@@ -1,8 +1,0 @@
-version: '3'
-services:
-  test:
-    build: .
-    volumes:
-      - ./sova.yaml:/etc/sova/sova.yaml
-    ports:
-      - "5000:5000"
