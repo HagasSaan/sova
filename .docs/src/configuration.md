@@ -28,8 +28,8 @@ rules:
 
 
 Supported syscalls:
-- [execv](./syscalls/execv.md)
-- [execve](./syscalls/execve.md)
-- [open](./syscalls/open.md)
-- [bind](./syscalls/bind.md)
-- [connect](./syscalls/connect.md)
+- [execv](syscalls/execv.md)
+- [execve](syscalls/execve.md)
+- [open](syscalls/open.md)
+- [bind](syscalls/bind.md)
+- [connect](syscalls/connect.md)
