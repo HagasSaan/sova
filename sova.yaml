@@ -30,3 +30,10 @@ rules:
       objects:
         - 4445
         - 7878
+  connect:
+    - subject: Port
+      behaviour_on_violation: KillProcess
+      condition: MustNotBeIn
+      objects:
+        - 80
+        - 443
