@@ -11,8 +11,8 @@ RUN cargo build # --release
 
 CMD ["sleep", "infinity"]
 
-#RUN echo '/sova/fakeldap/release/libsova.so' > /etc/ld.so.preload
-RUN echo '/sova/fakeldap/debug/libsova.so' > /etc/ld.so.preload
+#RUN echo '/sova/target/release/libsova.so' > /etc/ld.so.preload
+RUN echo '/sova/target/debug/libsova.so' > /etc/ld.so.preload
 #COPY ./sova.yaml /etc/sova/sova.yaml
 
 
