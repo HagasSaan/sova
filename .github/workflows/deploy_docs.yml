@@ -19,11 +19,12 @@ jobs:
           files: |
             docs/**
 
-      - name: Run step if any file(s) in the docs folder change
-        if: steps.changed-files-specific.outputs.any_changed == 'true'
+      - name: Run step if no file(s) in the docs folder change
+        if: steps.changed-files-specific.outputs.any_changed == 'false'
         run: |
-          echo "One or more files in the docs folder has changed."
-          echo "List all the files that have changed: ${{ steps.changed-files-specific.outputs.all_changed_files }}"
+          echo "Nothing changed"
+          echo "Killing execution"
+          exit 0
 
       - name: Setup mdBook
         uses: peaceiris/actions-mdbook@v1
