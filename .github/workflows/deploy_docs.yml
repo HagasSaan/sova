@@ -8,6 +8,10 @@ jobs:
   build_and_deploy_docs:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
       - name: Get changed files in the docs folder
         id: changed-files-specific
         uses: tj-actions/changed-files@v35
@@ -20,8 +24,6 @@ jobs:
         run: |
           echo "One or more files in the docs folder has changed."
           echo "List all the files that have changed: ${{ steps.changed-files-specific.outputs.all_changed_files }}"
-
-      - uses: actions/checkout@v3
 
       - name: Setup mdBook
         uses: peaceiris/actions-mdbook@v1
