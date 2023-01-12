@@ -143,8 +143,28 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
-<p>Sova</p>
+<p>Sova
+Syscall interceptor, based on <a href="https://www.baeldung.com/linux/ld_preload-trick-what-is">LD_PRELOAD</a> mechanism.</p>
+<p>With that mechanism syscall can be catched, processed, and then allowed or denied.</p>
+<p>Works only with dynamic linked executables for Unix/Linux systems.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="installation"><a class="header" href="#installation">Installation</a></h1>
+<p>How to build</p>
+<pre><code class="language-shell">git clone https://github.com/HagasSaan/sova.git
+cd sova
+cargo build --release
+</code></pre>
+<p>How to install</p>
+<pre><code class="language-shell">mkdir -p /etc/sova
+
+cat &lt;&lt; EOF &gt; /etc/sova/sova.yaml
+behaviour_on_incidents: KillProcess
+logfile_path: &quot;/var/log/sova.log&quot;
+rules:
+EOF
+
+echo &lt;fullpath to sova&gt;/target/release/libsova.so &gt; /etc/ld.so.preload
+</code></pre>
+<p>Before adding your rules please read <a href="./configuration.html">configuration</a> chapter.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="configuration"><a class="header" href="#configuration">Configuration</a></h1>
 <p>Default configuration structure</p>
 <pre><code class="language-yaml">behaviour_on_incidents: &lt;default behaviour on unhandled calls&gt;
@@ -176,7 +196,238 @@ rules:
 <li><a href="syscalls/bind.html">bind</a></li>
 <li><a href="syscalls/connect.html">connect</a></li>
 </ul>
-<div style="break-before: page; page-break-before: always;"></div><div style="break-before: page; page-break-before: always;"></div><div style="break-before: page; page-break-before: always;"></div><div style="break-before: page; page-break-before: always;"></div><div style="break-before: page; page-break-before: always;"></div>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="execv"><a class="header" href="#execv">Execv</a></h1>
+<p>Handle <a href="https://man7.org/linux/man-pages/man3/exec.3.html">execv</a> syscal.</p>
+<details>
+Helpful to avoid executing specific programs or scripts.
+</details>
+<p>Available subjects:</p>
+<ul>
+<li><code>Pathname</code>
+<ul>
+<li>Available conditions: <code>MustBeIn</code>, <code>MustNotBeIn</code></li>
+<li>Available objects: string - full path to file</li>
+</ul>
+</li>
+<li>'Argv'
+<ul>
+<li>Available conditions: <code>MustBeIn</code>, <code>MustNotBeIn</code></li>
+<li>Available objects: string - argument for executable</li>
+</ul>
+</li>
+</ul>
+<h4 id="basic-structure"><a class="header" href="#basic-structure">Basic structure</a></h4>
+<pre><code class="language-yaml">---
+behaviour_on_incidents: KillProcess
+logfile_path: &quot;/var/log/sova.log&quot;
+rules:
+  execv:
+    - subject: &lt;Subject to check&gt;
+      behaviour_on_violation: &lt;Behaviour on violation&gt;
+      condition: &lt;Condition&gt;
+      objects:
+        - &lt;Object to check&gt;
+</code></pre>
+<h4 id="example---allow-to-execute-only-bincat-and-binsh"><a class="header" href="#example---allow-to-execute-only-bincat-and-binsh">Example - allow to execute only <code>/bin/cat</code> and <code>/bin/sh</code></a></h4>
+<pre><code class="language-yaml">---
+behaviour_on_incidents: KillProcess
+logfile_path: &quot;/var/log/sova.log&quot;
+rules:
+  execv:
+  - subject: Pathname
+    behaviour_on_violation: KillProcess
+    condition: MustBeIn
+    objects:
+      - /bin/cat
+      - /bin/sh
+</code></pre>
+<h4 id="example---forbid-any-executions-with-etcpasswd-file-like-cat-etcpasswd"><a class="header" href="#example---forbid-any-executions-with-etcpasswd-file-like-cat-etcpasswd">Example - forbid any executions with <code>/etc/passwd</code> file, like <code>cat /etc/passwd</code></a></h4>
+<pre><code class="language-yaml">---
+behaviour_on_incidents: KillProcess
+logfile_path: &quot;/var/log/sova.log&quot;
+rules:
+  execv:
+  - subject: Argv
+    behaviour_on_violation: KillProcess
+    condition: MustNotBeIn
+    objects:
+      - /etc/passwd
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="execve"><a class="header" href="#execve">Execve</a></h1>
+<p>Handle <a href="https://man7.org/linux/man-pages/man2/execve.2.html">execve</a> syscall.</p>
+<details>
+Helpful to avoid executing specific programs or scripts.
+</details>
+<p>Available subjects:</p>
+<ul>
+<li><code>Pathname</code>
+<ul>
+<li>Available conditions: <code>MustBeIn</code>, <code>MustNotBeIn</code></li>
+<li>Available objects: string - full path to file</li>
+</ul>
+</li>
+<li>'Argv'
+<ul>
+<li>Available conditions: <code>MustBeIn</code>, <code>MustNotBeIn</code></li>
+<li>Available objects: string - argument for executable</li>
+</ul>
+</li>
+</ul>
+<h4 id="basic-structure-1"><a class="header" href="#basic-structure-1">Basic structure</a></h4>
+<pre><code class="language-yaml">---
+behaviour_on_incidents: KillProcess
+logfile_path: &quot;/var/log/sova.log&quot;
+rules:
+  execve:
+    - subject: &lt;Subject to check&gt;
+      behaviour_on_violation: &lt;Behaviour on violation&gt;
+      condition: &lt;Condition&gt;
+      objects:
+        - &lt;Object to check&gt;
+</code></pre>
+<h4 id="example---allow-to-execute-only-bincat-and-binsh-1"><a class="header" href="#example---allow-to-execute-only-bincat-and-binsh-1">Example - allow to execute only <code>/bin/cat</code> and <code>/bin/sh</code></a></h4>
+<pre><code class="language-yaml">---
+behaviour_on_incidents: KillProcess
+logfile_path: &quot;/var/log/sova.log&quot;
+rules:
+  execve:
+  - subject: Pathname
+    behaviour_on_violation: KillProcess
+    condition: MustBeIn
+    objects:
+      - /bin/cat
+      - /bin/sh
+</code></pre>
+<h4 id="example---forbid-any-executions-with-etcpasswd-file-like-cat-etcpasswd-1"><a class="header" href="#example---forbid-any-executions-with-etcpasswd-file-like-cat-etcpasswd-1">Example - forbid any executions with <code>/etc/passwd</code> file, like <code>cat /etc/passwd</code></a></h4>
+<pre><code class="language-yaml">---
+behaviour_on_incidents: KillProcess
+logfile_path: &quot;/var/log/sova.log&quot;
+rules:
+  execve:
+  - subject: Argv
+    behaviour_on_violation: KillProcess
+    condition: MustNotBeIn
+    objects:
+      - /etc/passwd
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="open"><a class="header" href="#open">Open</a></h1>
+<p>Handle <a href="https://man7.org/linux/man-pages/man2/open.2.html">open</a> syscall.</p>
+<details>
+Helpful to avoid opening confidential files on local filesystem
+</details>
+<p>Available subjects:</p>
+<ul>
+<li><code>Pathname</code>
+<ul>
+<li>Available conditions: <code>MustBeIn</code>, <code>MustNotBeIn</code></li>
+<li>Available objects: string - full path to file</li>
+</ul>
+</li>
+</ul>
+<h4 id="basic-structure-2"><a class="header" href="#basic-structure-2">Basic structure</a></h4>
+<pre><code class="language-yaml">---
+behaviour_on_incidents: KillProcess
+logfile_path: &quot;/var/log/sova.log&quot;
+rules:
+  open:
+    - subject: &lt;Subject to check&gt;
+      behaviour_on_violation: &lt;Behaviour on violation&gt;
+      condition: &lt;Condition&gt;
+      objects:
+        - &lt;Object to check&gt;
+</code></pre>
+<h4 id="example---forbid-opening-file-etcblabla-and-etcpasswd"><a class="header" href="#example---forbid-opening-file-etcblabla-and-etcpasswd">Example - forbid opening file <code>/etc/blabla</code> and <code>/etc/passwd</code></a></h4>
+<pre><code class="language-yaml">---
+behaviour_on_incidents: KillProcess
+logfile_path: &quot;/var/log/sova.log&quot;
+rules:
+  open:
+    - subject: Pathname
+      behaviour_on_violation: KillProcess
+      condition: MustNotBeIn
+      objects:
+        - /etc/blabla
+        - /etc/passwd 
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="bind"><a class="header" href="#bind">Bind</a></h1>
+<p>Handle <a href="https://man7.org/linux/man-pages/man2/bind.2.html">bind</a> syscall.</p>
+<details>
+Helpful to avoid creating reverse shells like `nc -lvp 4445` or opening ports by vulnerable app
+</details>
+<p>Available subjects:</p>
+<ul>
+<li><code>Port</code>
+<ul>
+<li>Available conditions: <code>MustBeIn</code>, <code>MustNotBeIn</code></li>
+<li>Available objects: int - values from 0 to 65536</li>
+</ul>
+</li>
+</ul>
+<h4 id="basic-structure-3"><a class="header" href="#basic-structure-3">Basic structure</a></h4>
+<pre><code class="language-yaml">---
+behaviour_on_incidents: KillProcess
+logfile_path: &quot;/var/log/sova.log&quot;
+rules:
+  bind:
+    - subject: &lt;Subject to check&gt;
+      behaviour_on_violation: &lt;Behaviour on violation&gt;
+      condition: &lt;Condition&gt;
+      objects:
+        - &lt;Object to check&gt;
+</code></pre>
+<h4 id="example---forbid-binding-sockets-on-ports-4445-and-7878"><a class="header" href="#example---forbid-binding-sockets-on-ports-4445-and-7878">Example - forbid binding sockets on ports 4445 and 7878</a></h4>
+<pre><code class="language-yaml">---
+behaviour_on_incidents: KillProcess
+logfile_path: &quot;/var/log/sova.log&quot;
+rules:
+  bind:
+    - subject: Port
+      behaviour_on_violation: KillProcess
+      condition: MustNotBeIn
+      objects:
+        - 4445
+        - 7878
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="connect"><a class="header" href="#connect">Connect</a></h1>
+<p>Handle <a href="https://man7.org/linux/man-pages/man2/connect.2.html">connect</a> syscall.</p>
+<details>
+Helpful to avoid connecting to external addresses by vulnerable app
+</details>
+<p>Available subjects:</p>
+<ul>
+<li><code>Port</code>
+<ul>
+<li>Available conditions: <code>MustBeIn</code>, <code>MustNotBeIn</code></li>
+<li>Available objects: int - values from 0 to 65536</li>
+</ul>
+</li>
+</ul>
+<h4 id="basic-structure-4"><a class="header" href="#basic-structure-4">Basic structure</a></h4>
+<pre><code class="language-yaml">---
+behaviour_on_incidents: KillProcess
+logfile_path: &quot;/var/log/sova.log&quot;
+rules:
+  connect:
+    - subject: &lt;Subject to check&gt;
+      behaviour_on_violation: &lt;Behaviour on violation&gt;
+      condition: &lt;Condition&gt;
+      objects:
+        - &lt;Object to check&gt;
+</code></pre>
+<h4 id="example---forbid-connecting-to-external-ports-4445-and-7878"><a class="header" href="#example---forbid-connecting-to-external-ports-4445-and-7878">Example - forbid connecting to external ports 4445 and 7878</a></h4>
+<pre><code class="language-yaml">---
+behaviour_on_incidents: KillProcess
+logfile_path: &quot;/var/log/sova.log&quot;
+rules:
+  connect:
+    - subject: Port
+      behaviour_on_violation: KillProcess
+      condition: MustNotBeIn
+      objects:
+        - 4445
+        - 7878
+</code></pre>
+
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">

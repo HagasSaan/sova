@@ -141,7 +141,64 @@
 
                 <div id="content" class="content">
                     <main>
-                        
+                        <h1 id="execve"><a class="header" href="#execve">Execve</a></h1>
+<p>Handle <a href="https://man7.org/linux/man-pages/man2/execve.2.html">execve</a> syscall.</p>
+<details>
+Helpful to avoid executing specific programs or scripts.
+</details>
+<p>Available subjects:</p>
+<ul>
+<li><code>Pathname</code>
+<ul>
+<li>Available conditions: <code>MustBeIn</code>, <code>MustNotBeIn</code></li>
+<li>Available objects: string - full path to file</li>
+</ul>
+</li>
+<li>'Argv'
+<ul>
+<li>Available conditions: <code>MustBeIn</code>, <code>MustNotBeIn</code></li>
+<li>Available objects: string - argument for executable</li>
+</ul>
+</li>
+</ul>
+<h4 id="basic-structure"><a class="header" href="#basic-structure">Basic structure</a></h4>
+<pre><code class="language-yaml">---
+behaviour_on_incidents: KillProcess
+logfile_path: &quot;/var/log/sova.log&quot;
+rules:
+  execve:
+    - subject: &lt;Subject to check&gt;
+      behaviour_on_violation: &lt;Behaviour on violation&gt;
+      condition: &lt;Condition&gt;
+      objects:
+        - &lt;Object to check&gt;
+</code></pre>
+<h4 id="example---allow-to-execute-only-bincat-and-binsh"><a class="header" href="#example---allow-to-execute-only-bincat-and-binsh">Example - allow to execute only <code>/bin/cat</code> and <code>/bin/sh</code></a></h4>
+<pre><code class="language-yaml">---
+behaviour_on_incidents: KillProcess
+logfile_path: &quot;/var/log/sova.log&quot;
+rules:
+  execve:
+  - subject: Pathname
+    behaviour_on_violation: KillProcess
+    condition: MustBeIn
+    objects:
+      - /bin/cat
+      - /bin/sh
+</code></pre>
+<h4 id="example---forbid-any-executions-with-etcpasswd-file-like-cat-etcpasswd"><a class="header" href="#example---forbid-any-executions-with-etcpasswd-file-like-cat-etcpasswd">Example - forbid any executions with <code>/etc/passwd</code> file, like <code>cat /etc/passwd</code></a></h4>
+<pre><code class="language-yaml">---
+behaviour_on_incidents: KillProcess
+logfile_path: &quot;/var/log/sova.log&quot;
+rules:
+  execve:
+  - subject: Argv
+    behaviour_on_violation: KillProcess
+    condition: MustNotBeIn
+    objects:
+      - /etc/passwd
+</code></pre>
+
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
