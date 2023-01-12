@@ -17,7 +17,7 @@ logfile_path: "/var/log/sova.log"
 rules:
 EOF
 
-echo <fullpath to sova>/target/release/libsova.so > /etc/ld.so.preload
+echo <fullpath to sova>/fakeldap/release/libsova.so > /etc/ld.so.preload
 ```
 
 Before adding your rules please read [configuration](./configuration.md) chapter.
