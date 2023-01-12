@@ -19,7 +19,7 @@ jobs:
           files: |
             docs/**
 
-      - name: Run step if any file(s) in the docs folder change
+      - name: Run step if no file(s) in the docs folder change
         if: steps.changed-files-specific.outputs.any_changed == 'false'
         run: |
           echo "Nothing changed"
