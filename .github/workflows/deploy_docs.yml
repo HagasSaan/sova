@@ -24,7 +24,9 @@ jobs:
         run: |
           echo "Nothing changed"
           echo "Killing execution"
-          exit 0
+#          exit 0
+#      TODO: find real way to cancel execution without copypasting 'if' for every step
+#      NOTE: https://github.com/orgs/community/discussions/25280
 
       - name: Setup mdBook
         uses: peaceiris/actions-mdbook@v1
