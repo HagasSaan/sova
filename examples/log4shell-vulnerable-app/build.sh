@@ -1,5 +1,5 @@
-mkdir -p sova
-cp -r ../../src sova
-cp ../../Cargo.toml sova
+mkdir -p app/sova
+cp -r ../../src app/sova
+cp ../../Cargo.toml app/sova
 docker-compose up -d --build
-rm -rf sova
+rm -rf app/sova
