@@ -2,3 +2,9 @@
 behaviour_on_incidents: LogOnly
 logfile_path: "/tmp/sova.log"
 rules:
+  open:
+    - subject: Pathname
+      behaviour_on_violation: KillProcess
+      condition: MustNotBeIn
+      objects:
+        - /tmp/a
