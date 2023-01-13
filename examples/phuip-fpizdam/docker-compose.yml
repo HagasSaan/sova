@@ -1,0 +1,10 @@
+version: '3'
+services:
+  target:
+    build: target
+    volumes:
+      - ./sova.yaml:/etc/sova/sova.yaml
+    ports:
+      - 8080:80
+  exploit:
+    build: exploit
