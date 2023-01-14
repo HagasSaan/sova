@@ -1,29 +1,24 @@
 use log::{debug, warn};
+use crate::syscalls::common::analyzer::Analyzer;
 
 use crate::syscalls::common::behaviour::Behaviour;
-use crate::syscalls::common::configuration::Configuration;
 use crate::syscalls::common::rule_result::RuleResult;
 use crate::syscalls::execve::record::Record;
+use crate::syscalls::execve::rule::Rule;
 
-pub struct Analyzer {
-    configuration: Configuration,
-}
-
-impl Analyzer {
-    pub fn new(configuration: Configuration) -> Self {
-        Analyzer { configuration }
+impl Analyzer<Rule> {
+    pub fn new(rules: Option<Vec<Rule>>) -> Self {
+        Analyzer { rules }
     }
 
     pub fn analyze(&self, record: Record) -> Behaviour {
         debug!("record: {:?}", &record);
 
-        let rules = &self.configuration.rules.execve;
-
-        if rules.is_none() {
+        if self.rules.is_none() {
             return Behaviour::LogOnly;
         }
 
-        for rule in rules.as_ref().unwrap() {
+        for rule in self.rules.as_ref().unwrap() {
             match rule.check(&record) {
                 RuleResult::Pass => {}
                 RuleResult::Fail => {

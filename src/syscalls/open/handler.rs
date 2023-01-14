@@ -8,8 +8,9 @@ use log::{info, warn};
 use crate::syscalls::common::behaviour::Behaviour;
 use crate::syscalls::common::logger::setup_logger;
 use crate::syscalls::common::{configuration, utils};
-use crate::syscalls::open::analyzer::Analyzer;
+use crate::syscalls::common::analyzer::Analyzer;
 use crate::syscalls::open::record::Record;
+use crate::syscalls::open::rule::Rule;
 
 lazy_static! {
     static ref ORIGINAL_OPEN: extern "C" fn(*const libc::c_char, libc::c_int) -> libc::c_int = unsafe {
@@ -45,7 +46,7 @@ pub unsafe extern "C" fn open(pathname: *const libc::c_char, flags: libc::c_int)
         flags,
     };
 
-    let analyzer = Analyzer::new(configuration);
+    let analyzer = Analyzer::<Rule>::new(configuration.rules.open);
 
     let behaviour = analyzer.analyze(record);
 

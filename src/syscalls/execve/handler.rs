@@ -8,8 +8,9 @@ use log::{info, warn};
 use crate::syscalls::common::behaviour::Behaviour;
 use crate::syscalls::common::logger::setup_logger;
 use crate::syscalls::common::{configuration, utils};
-use crate::syscalls::execve::analyzer::Analyzer;
+use crate::syscalls::common::analyzer::Analyzer;
 use crate::syscalls::execve::record::Record;
+use crate::syscalls::execve::rule::Rule;
 
 lazy_static! {
     static ref ORIGINAL_EXECVE: extern "C" fn(
@@ -57,7 +58,7 @@ pub unsafe extern "C" fn execve(
         envp: envp_vec_str,
     };
 
-    let analyzer = Analyzer::new(configuration);
+    let analyzer = Analyzer::<Rule>::new(configuration.rules.execve);
 
     let behaviour = analyzer.analyze(record);
 

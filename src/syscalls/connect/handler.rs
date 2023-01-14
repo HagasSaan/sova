@@ -4,13 +4,14 @@ use std::mem;
 use std::time::Instant;
 
 use crate::syscalls::common::sockaddr_in::SockaddrIn;
-use crate::syscalls::connect::analyzer::Analyzer;
+use crate::syscalls::common::analyzer::Analyzer;
 use crate::syscalls::connect::record::Record;
 use log::{info, warn};
 
 use crate::syscalls::common::behaviour::Behaviour;
 use crate::syscalls::common::configuration;
 use crate::syscalls::common::logger::setup_logger;
+use crate::syscalls::connect::rule::Rule;
 
 lazy_static! {
     static ref ORIGINAL_CONNECT: extern "C" fn(libc::c_int, *const libc::sockaddr_in, libc::socklen_t) -> libc::c_int = unsafe {
@@ -52,7 +53,7 @@ pub unsafe extern "C" fn connect(
         addrlen,
     };
 
-    let analyzer = Analyzer::new(configuration);
+    let analyzer = Analyzer::<Rule>::new(configuration.rules.connect);
 
     let behaviour = analyzer.analyze(record);
 
