@@ -3,9 +3,9 @@ use std::ffi::CStr;
 use std::mem;
 use std::time::Instant;
 
-use crate::syscalls::bind::analyzer::Analyzer;
 use crate::syscalls::bind::record::Record;
-use crate::syscalls::bind::sockaddr_in::SockaddrIn;
+use crate::syscalls::common::analyzer::Analyzer;
+use crate::syscalls::common::sockaddr_in::SockaddrIn;
 use log::{info, warn};
 
 use crate::syscalls::common::behaviour::Behaviour;
@@ -52,7 +52,7 @@ pub unsafe extern "C" fn bind(
         addrlen,
     };
 
-    let analyzer = Analyzer::new(configuration);
+    let analyzer = Analyzer::new(configuration.rules.bind);
 
     let behaviour = analyzer.analyze(record);
 

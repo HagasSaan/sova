@@ -5,10 +5,10 @@ use std::time::Instant;
 
 use log::{info, warn};
 
+use crate::syscalls::common::analyzer::Analyzer;
 use crate::syscalls::common::behaviour::Behaviour;
 use crate::syscalls::common::logger::setup_logger;
 use crate::syscalls::common::{configuration, utils};
-use crate::syscalls::execv::analyzer::Analyzer;
 use crate::syscalls::execv::record::Record;
 
 lazy_static! {
@@ -50,7 +50,7 @@ pub unsafe extern "C" fn execv(
         argv: argv_vec_str,
     };
 
-    let analyzer = Analyzer::new(configuration);
+    let analyzer = Analyzer::new(configuration.rules.execv);
 
     let behaviour = analyzer.analyze(record);
 
