@@ -1,4 +1,4 @@
-use crate::syscalls::connect::sockaddr_in::SockaddrIn;
+use crate::syscalls::common::sockaddr_in::SockaddrIn;
 
 #[derive(Debug)]
 pub struct Record {

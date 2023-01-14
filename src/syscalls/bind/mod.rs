@@ -3,5 +3,5 @@ mod condition;
 mod handler;
 mod record;
 pub mod rule;
-mod sockaddr_in;
+mod rule_tests;
 mod subject;

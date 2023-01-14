@@ -5,7 +5,7 @@ use std::time::Instant;
 
 use crate::syscalls::bind::analyzer::Analyzer;
 use crate::syscalls::bind::record::Record;
-use crate::syscalls::bind::sockaddr_in::SockaddrIn;
+use crate::syscalls::common::sockaddr_in::SockaddrIn;
 use log::{info, warn};
 
 use crate::syscalls::common::behaviour::Behaviour;

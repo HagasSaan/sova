@@ -12,7 +12,7 @@ mod tests {
         let rule = Rule {
             subject: Subject::Pathname,
             condition: Condition::MustBeIn,
-            objects: vec![String::from("some/path")],
+            objects: vec!["some/path".to_string()],
             behaviour_on_violation: Behaviour::KillProcess,
         };
 
@@ -30,7 +30,7 @@ mod tests {
         let rule = Rule {
             subject: Subject::Pathname,
             condition: Condition::MustBeIn,
-            objects: vec![String::from("some/path")],
+            objects: vec!["some/path".to_string()],
             behaviour_on_violation: Behaviour::KillProcess,
         };
 
@@ -48,13 +48,13 @@ mod tests {
         let rule = Rule {
             subject: Subject::Argv,
             condition: Condition::MustNotBeIn,
-            objects: vec![String::from("/etc/passwd")],
+            objects: vec!["some/path".to_string()],
             behaviour_on_violation: Behaviour::KillProcess,
         };
 
         let record = Record {
             pathname: "/usr/bin/cat".to_string(),
-            argv: Option::from(vec![String::from("/var/log/sova.log")]),
+            argv: Option::from(vec!["/var/log/sova.log".to_string()]),
             envp: None,
         };
 
@@ -66,13 +66,13 @@ mod tests {
         let rule = Rule {
             subject: Subject::Argv,
             condition: Condition::MustNotBeIn,
-            objects: vec![String::from("/etc/passwd")],
+            objects: vec!["/etc/passwd".to_string()],
             behaviour_on_violation: Behaviour::KillProcess,
         };
 
         let record = Record {
             pathname: "/usr/bin/cat".to_string(),
-            argv: Option::from(vec![String::from("/etc/passwd")]),
+            argv: Option::from(vec!["/etc/passwd".to_string()]),
             envp: None,
         };
 

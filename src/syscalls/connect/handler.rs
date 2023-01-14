@@ -3,9 +3,9 @@ use std::ffi::CStr;
 use std::mem;
 use std::time::Instant;
 
+use crate::syscalls::common::sockaddr_in::SockaddrIn;
 use crate::syscalls::connect::analyzer::Analyzer;
 use crate::syscalls::connect::record::Record;
-use crate::syscalls::connect::sockaddr_in::SockaddrIn;
 use log::{info, warn};
 
 use crate::syscalls::common::behaviour::Behaviour;
