@@ -1,5 +1,5 @@
-use serde::{Deserialize, Serialize};
 use crate::syscalls::common::with_behaviour::WithBehaviour;
+use serde::{Deserialize, Serialize};
 
 use crate::syscalls::common::behaviour::Behaviour;
 use crate::syscalls::common::checkable::Checkable;
@@ -59,7 +59,6 @@ impl Rule {
         }
     }
 }
-
 
 impl WithBehaviour for Rule {
     fn behaviour(&self) -> Behaviour {

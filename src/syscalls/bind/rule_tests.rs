@@ -5,9 +5,9 @@ mod tests {
     use crate::syscalls::bind::rule::Rule;
     use crate::syscalls::bind::subject::Subject;
     use crate::syscalls::common::behaviour::Behaviour;
+    use crate::syscalls::common::checkable::Checkable;
     use crate::syscalls::common::rule_result::RuleResult;
     use crate::syscalls::common::sockaddr_in::SockaddrIn;
-    use crate::syscalls::common::checkable::Checkable;
 
     use std::net::Ipv4Addr;
 

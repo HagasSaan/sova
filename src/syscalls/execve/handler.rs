@@ -5,10 +5,10 @@ use std::time::Instant;
 
 use log::{info, warn};
 
+use crate::syscalls::common::analyzer::Analyzer;
 use crate::syscalls::common::behaviour::Behaviour;
 use crate::syscalls::common::logger::setup_logger;
 use crate::syscalls::common::{configuration, utils};
-use crate::syscalls::common::analyzer::Analyzer;
 use crate::syscalls::execve::record::Record;
 
 lazy_static! {

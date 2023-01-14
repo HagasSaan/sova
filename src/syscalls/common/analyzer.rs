@@ -1,20 +1,22 @@
-use std::fmt::Debug;
-use std::marker::PhantomData;
-use log::{debug, warn};
 use crate::syscalls::common::behaviour::Behaviour;
 use crate::syscalls::common::checkable::Checkable;
 use crate::syscalls::common::rule_result::RuleResult;
 use crate::syscalls::common::with_behaviour::WithBehaviour;
-
+use log::{debug, warn};
+use std::fmt::Debug;
+use std::marker::PhantomData;
 
 pub struct Analyzer<T: WithBehaviour + Checkable<R>, R> {
     pub rules: Option<Vec<T>>,
-    record: PhantomData<R>
+    record: PhantomData<R>,
 }
 
 impl<T: Debug + WithBehaviour + Checkable<R>, R: Debug> Analyzer<T, R> {
     pub fn new(rules: Option<Vec<T>>) -> Self {
-        Analyzer { rules, record: PhantomData }
+        Analyzer {
+            rules,
+            record: PhantomData,
+        }
     }
 
     pub fn analyze(&self, record: R) -> Behaviour {

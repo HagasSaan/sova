@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests {
-    use crate::syscalls::common::checkable::Checkable;
     use crate::syscalls::common::behaviour::Behaviour;
+    use crate::syscalls::common::checkable::Checkable;
     use crate::syscalls::common::rule_result::RuleResult;
     use crate::syscalls::execve::condition::Condition;
     use crate::syscalls::execve::record::Record;

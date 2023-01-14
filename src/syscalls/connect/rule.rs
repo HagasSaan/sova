@@ -1,6 +1,6 @@
+use crate::syscalls::common::with_behaviour::WithBehaviour;
 use crate::syscalls::connect::condition::Condition;
 use serde::{Deserialize, Serialize};
-use crate::syscalls::common::with_behaviour::WithBehaviour;
 
 use crate::syscalls::common::behaviour::Behaviour;
 use crate::syscalls::common::checkable::Checkable;

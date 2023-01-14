@@ -3,10 +3,10 @@ use serde::{Deserialize, Serialize};
 
 use crate::syscalls::bind::record::Record;
 use crate::syscalls::bind::subject::Subject;
-use crate::syscalls::common::with_behaviour::WithBehaviour;
 use crate::syscalls::common::behaviour::Behaviour;
 use crate::syscalls::common::checkable::Checkable;
 use crate::syscalls::common::rule_result::RuleResult;
+use crate::syscalls::common::with_behaviour::WithBehaviour;
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Rule {

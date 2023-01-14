@@ -1,12 +1,12 @@
 #[cfg(test)]
 mod tests {
     use crate::syscalls::common::behaviour::Behaviour;
+    use crate::syscalls::common::checkable::Checkable;
     use crate::syscalls::common::rule_result::RuleResult;
     use crate::syscalls::open::condition::Condition;
     use crate::syscalls::open::record::Record;
     use crate::syscalls::open::rule::Rule;
     use crate::syscalls::open::subject::Subject;
-    use crate::syscalls::common::checkable::Checkable;
 
     #[test]
     fn check_by_pathname_succeeded() {

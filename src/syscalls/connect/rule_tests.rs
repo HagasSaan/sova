@@ -1,6 +1,7 @@
 #[cfg(test)]
 mod tests {
     use crate::syscalls::common::behaviour::Behaviour;
+    use crate::syscalls::common::checkable::Checkable;
     use crate::syscalls::common::rule_result::RuleResult;
     use crate::syscalls::common::sockaddr_in::SockaddrIn;
     use crate::syscalls::connect::condition::Condition;
@@ -8,7 +9,6 @@ mod tests {
     use crate::syscalls::connect::rule::Rule;
     use crate::syscalls::connect::subject::Subject;
     use std::net::Ipv4Addr;
-    use crate::syscalls::common::checkable::Checkable;
 
     #[test]
     fn check_by_port_succeeded() {

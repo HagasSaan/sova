@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests {
-    use crate::syscalls::common::checkable::Checkable;
     use crate::syscalls::common::behaviour::Behaviour;
+    use crate::syscalls::common::checkable::Checkable;
     use crate::syscalls::common::rule_result::RuleResult;
     use crate::syscalls::execv::condition::Condition;
     use crate::syscalls::execv::record::Record;
@@ -13,7 +13,7 @@ mod tests {
         let rule = Rule {
             subject: Subject::Pathname,
             condition: Condition::MustBeIn,
-            objects: vec!["some/path".to_string(),],
+            objects: vec!["some/path".to_string()],
             behaviour_on_violation: Behaviour::KillProcess,
         };
 
@@ -30,7 +30,7 @@ mod tests {
         let rule = Rule {
             subject: Subject::Pathname,
             condition: Condition::MustBeIn,
-            objects: vec!["some/path".to_string(),],
+            objects: vec!["some/path".to_string()],
             behaviour_on_violation: Behaviour::KillProcess,
         };
 
