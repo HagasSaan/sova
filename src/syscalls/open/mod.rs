@@ -1,4 +1,3 @@
-mod analyzer;
 mod condition;
 mod handler;
 mod record;

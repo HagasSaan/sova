@@ -1,6 +1,8 @@
 use serde::{Deserialize, Serialize};
+use crate::syscalls::common::with_behaviour::WithBehaviour;
 
 use crate::syscalls::common::behaviour::Behaviour;
+use crate::syscalls::common::checkable::Checkable;
 use crate::syscalls::common::rule_result::RuleResult;
 use crate::syscalls::execv::condition::Condition;
 use crate::syscalls::execv::record::Record;
@@ -15,13 +17,6 @@ pub struct Rule {
 }
 
 impl Rule {
-    pub fn check(&self, record: &Record) -> RuleResult {
-        match self.subject {
-            Subject::Pathname => self.check_by_pathname(record),
-            Subject::Argv => self.check_by_argv(record),
-        }
-    }
-
     fn check_by_argv(&self, record: &Record) -> RuleResult {
         match &record.argv {
             None => RuleResult::Pass,
@@ -61,6 +56,22 @@ impl Rule {
                     RuleResult::Pass
                 }
             }
+        }
+    }
+}
+
+
+impl WithBehaviour for Rule {
+    fn behaviour(&self) -> Behaviour {
+        self.behaviour_on_violation.clone()
+    }
+}
+
+impl Checkable<Record> for Rule {
+    fn check(&self, record: &Record) -> RuleResult {
+        match self.subject {
+            Subject::Pathname => self.check_by_pathname(record),
+            Subject::Argv => self.check_by_argv(record),
         }
     }
 }

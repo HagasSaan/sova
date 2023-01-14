@@ -5,3 +5,5 @@ pub mod rule_result;
 pub mod sockaddr_in;
 pub mod utils;
 pub mod analyzer;
+pub mod checkable;
+pub mod with_behaviour;

@@ -6,6 +6,7 @@ mod tests {
     use crate::syscalls::open::record::Record;
     use crate::syscalls::open::rule::Rule;
     use crate::syscalls::open::subject::Subject;
+    use crate::syscalls::common::checkable::Checkable;
 
     #[test]
     fn check_by_pathname_succeeded() {

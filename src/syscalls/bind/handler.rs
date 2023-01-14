@@ -7,7 +7,6 @@ use crate::syscalls::common::analyzer::Analyzer;
 use crate::syscalls::bind::record::Record;
 use crate::syscalls::common::sockaddr_in::SockaddrIn;
 use log::{info, warn};
-use crate::syscalls::bind::rule::Rule;
 
 use crate::syscalls::common::behaviour::Behaviour;
 use crate::syscalls::common::configuration;
@@ -53,7 +52,7 @@ pub unsafe extern "C" fn bind(
         addrlen,
     };
 
-    let analyzer = Analyzer::<Rule>::new(configuration.rules.bind);
+    let analyzer = Analyzer::new(configuration.rules.bind);
 
     let behaviour = analyzer.analyze(record);
 

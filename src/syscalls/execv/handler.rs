@@ -10,7 +10,6 @@ use crate::syscalls::common::logger::setup_logger;
 use crate::syscalls::common::{configuration, utils};
 use crate::syscalls::common::analyzer::Analyzer;
 use crate::syscalls::execv::record::Record;
-use crate::syscalls::execv::rule::Rule;
 
 lazy_static! {
     static ref ORIGINAL_EXECV: extern "C" fn(*const libc::c_char, *const *const libc::c_char) -> libc::c_int = unsafe {
@@ -51,7 +50,7 @@ pub unsafe extern "C" fn execv(
         argv: argv_vec_str,
     };
 
-    let analyzer = Analyzer::<Rule>::new(configuration.rules.execv);
+    let analyzer = Analyzer::new(configuration.rules.execv);
 
     let behaviour = analyzer.analyze(record);
 

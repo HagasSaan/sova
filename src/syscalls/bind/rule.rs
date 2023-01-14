@@ -3,7 +3,9 @@ use serde::{Deserialize, Serialize};
 
 use crate::syscalls::bind::record::Record;
 use crate::syscalls::bind::subject::Subject;
+use crate::syscalls::common::with_behaviour::WithBehaviour;
 use crate::syscalls::common::behaviour::Behaviour;
+use crate::syscalls::common::checkable::Checkable;
 use crate::syscalls::common::rule_result::RuleResult;
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -15,13 +17,6 @@ pub struct Rule {
 }
 
 impl Rule {
-    pub fn check(&self, record: &Record) -> RuleResult {
-        match self.subject {
-            Subject::Port => self.check_by_port(record),
-            Subject::Subnet => unimplemented!(), // TODO: implement
-        }
-    }
-
     fn check_by_port(&self, record: &Record) -> RuleResult {
         let port = &record.addr.sin_port.to_string();
 
@@ -40,6 +35,21 @@ impl Rule {
                     RuleResult::Pass
                 }
             }
+        }
+    }
+}
+
+impl WithBehaviour for Rule {
+    fn behaviour(&self) -> Behaviour {
+        self.behaviour_on_violation.clone()
+    }
+}
+
+impl Checkable<Record> for Rule {
+    fn check(&self, record: &Record) -> RuleResult {
+        match self.subject {
+            Subject::Port => self.check_by_port(record),
+            Subject::Subnet => unimplemented!(), // TODO: implement
         }
     }
 }

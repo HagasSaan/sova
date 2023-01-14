@@ -8,6 +8,7 @@ mod tests {
     use crate::syscalls::connect::rule::Rule;
     use crate::syscalls::connect::subject::Subject;
     use std::net::Ipv4Addr;
+    use crate::syscalls::common::checkable::Checkable;
 
     #[test]
     fn check_by_port_succeeded() {

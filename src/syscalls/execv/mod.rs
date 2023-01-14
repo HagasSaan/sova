@@ -1,4 +1,3 @@
-mod analyzer;
 mod handler;
 mod record;
 pub mod rule;
