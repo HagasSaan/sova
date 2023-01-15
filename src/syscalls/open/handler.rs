@@ -12,7 +12,7 @@ use crate::syscalls::common::{configuration, utils};
 use crate::syscalls::open::record::Record;
 
 lazy_static! {
-    static ref ORIGINAL_OPEN: extern "C" fn(*const libc::c_char, libc::c_int) -> libc::c_int = unsafe {
+    static ref ORIGINAL_OPEN: extern "C" fn(*const libc::c_char, libc::c_int, mode: libc::mode_t) -> libc::c_int = unsafe {
         let fn_name = CStr::from_bytes_with_nul(b"open\0").unwrap();
         let fn_ptr = libc::dlsym(libc::RTLD_NEXT, fn_name.as_ptr());
 
@@ -21,7 +21,7 @@ lazy_static! {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn open(pathname: *const libc::c_char, flags: libc::c_int) -> libc::c_int {
+pub unsafe extern "C" fn open(pathname: *const libc::c_char, flags: libc::c_int, mode: libc::mode_t) -> libc::c_int {
     let start_time = Instant::now();
 
     let configuration = configuration::load_configuration();
@@ -43,6 +43,7 @@ pub unsafe extern "C" fn open(pathname: *const libc::c_char, flags: libc::c_int)
     let record: Record = Record {
         pathname: pathname_str,
         flags,
+        mode
     };
 
     let analyzer = Analyzer::new(configuration.rules.open);
@@ -64,7 +65,7 @@ pub unsafe extern "C" fn open(pathname: *const libc::c_char, flags: libc::c_int)
         }
     };
 
-    let descriptor = ORIGINAL_OPEN(pathname, flags);
+    let descriptor = ORIGINAL_OPEN(pathname, flags, mode);
 
     info!("Return value: {}", descriptor); // TODO: remove or move to analyzer
 

@@ -20,6 +20,7 @@ mod tests {
         let record = Record {
             pathname: "/etc/passwd".to_string(),
             flags: 0,
+            mode: 0,
         };
 
         assert_eq!(RuleResult::Pass, rule.check(&record));
@@ -37,6 +38,7 @@ mod tests {
         let record = Record {
             pathname: "/bin/sh".to_string(),
             flags: 0,
+            mode: 0,
         };
 
         assert_eq!(RuleResult::Fail, rule.check(&record));
