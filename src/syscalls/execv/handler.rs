@@ -3,7 +3,7 @@ use std::ffi::CStr;
 use std::mem;
 use std::time::Instant;
 
-use log::{info, warn};
+use log::{debug, info, warn};
 
 use crate::syscalls::common::analyzer::Analyzer;
 use crate::syscalls::common::behaviour::Behaviour;
@@ -32,7 +32,7 @@ pub unsafe extern "C" fn execv(
     match setup_logger(&configuration.logfile_path) {
         Ok(_) => {}
         Err(e) => {
-            println!(
+            debug!(
                 "Could not setup logger: {:?}, path: {:?}, call: execv",
                 e.source(),
                 &configuration.logfile_path

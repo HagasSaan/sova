@@ -6,7 +6,7 @@ use std::time::Instant;
 use crate::syscalls::common::analyzer::Analyzer;
 use crate::syscalls::common::sockaddr_in::SockaddrIn;
 use crate::syscalls::connect::record::Record;
-use log::{info, warn};
+use log::{info, warn, debug};
 
 use crate::syscalls::common::behaviour::Behaviour;
 use crate::syscalls::common::configuration;
@@ -34,7 +34,7 @@ pub unsafe extern "C" fn connect(
     match setup_logger(&configuration.logfile_path) {
         Ok(_) => {}
         Err(e) => {
-            println!(
+            debug!(
                 "Could not setup logger: {:?}, path: {:?}, call: connect",
                 e.source(),
                 &configuration.logfile_path

@@ -1,13 +1,15 @@
 FROM rust:1.66.1-bullseye
 
-RUN apt update && apt install -y netcat
+RUN --mount=type=cache,target=/var/cache/apt apt update && apt install -y netcat
 
 
 RUN mkdir /sova
 WORKDIR /sova
 COPY ./src /sova/src
 COPY ./Cargo.toml /sova/Cargo.toml
-RUN cargo build # --release
+RUN --mount=type=cache,target=/sova/build \
+    --mount=type=cache,target=/usr/local/cargo/registry \
+    cargo build # --release
 
 CMD ["sleep", "infinity"]
 
